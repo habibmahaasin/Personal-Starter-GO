@@ -12,10 +12,10 @@ import (
 
 func ParseTmpl(router *gin.Engine) *gin.Engine { //Load HTML Template
 	router.Static("/assets", "./public/assets")
-	router.Static("/images", "./public/images")
+	router.Static("/img", "./public/assets/img")
 	router.Static("/css", "./public/assets/css")
 	router.Static("/js", "./public/assets/js")
-	router.Static("/fonts", "./public/assets/fonts")
+	router.Static("/vendor", "./public/assets/vendor")
 	return router
 }
 
@@ -26,6 +26,8 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	// Routing Website Service
 	device := router.Group("/", basic.Auth(conf))
 	device.GET("/", deviceViewV1.Index)
+	device.GET("/login", deviceViewV1.Login)
+	device.GET("/daftar-perangkat", deviceViewV1.ListDevice)
 
 	//Routing API Service
 	api := router.Group("/api/v1")

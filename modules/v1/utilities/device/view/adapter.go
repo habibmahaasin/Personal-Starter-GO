@@ -8,7 +8,7 @@ import (
 )
 
 type deviceView struct {
-	deviceView service.Service
+	deviceService service.Service
 }
 
 func NewDeviceView(deviceService service.Service) *deviceView {

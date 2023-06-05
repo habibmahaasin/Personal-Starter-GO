@@ -27,8 +27,8 @@ func setup() (*gorm.DB, config.Conf, *gin.Engine) {
 	router.Use(cors.Default())
 
 	cookieStore := cookie.NewStore([]byte(conf.App.Secret_key))
-	router.Use(sessions.Sessions("cleaningpatterngo", cookieStore))
-	router.HTMLRender = html.Render("./public")
+	router.Use(sessions.Sessions("GuppyTech", cookieStore))
+	router.HTMLRender = html.Render("./public/templates")
 
 	//Error Handling for 404 Not Found Page and Method Not Allowed
 	router.NoRoute(error.PageNotFound())
@@ -44,6 +44,5 @@ func main() {
 
 	router := routesV1.Init(setup()) //Version 1
 
-	//fmt.Println("Starter " + conf.App.Name)
 	router.Run(":" + conf.App.Port)
 }

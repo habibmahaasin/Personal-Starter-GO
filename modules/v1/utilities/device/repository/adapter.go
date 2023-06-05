@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	GetLatestCon(token string) (models.Received, error)
 	BindSensorData(DeviceId string, input models.ConnectionDat) error
+	GetAllDevices() ([]models.Device, error)
 }
 
 type repository struct {

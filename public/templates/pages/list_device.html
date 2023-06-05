@@ -1,0 +1,52 @@
+{{ define "content" }}
+<div class="content-container-large">
+    <div class="header-container-large d-flex justify-content-between">
+      <h1 class="page-title">{{ .title }}</h1>
+      <a class="btn btn-orange"><i class='bx bx-plus'></i> Tambah Perangkat</a>
+    </div>
+    <div class="table-responsive overflow-scroll">
+        <table id="guppytech-table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr style="height: 50px; vertical-align: middle;">
+                    <th>Nama Perangkat</th>
+                    <th>Status Kontrol</th>
+                    <th>Data diperbarui</th>
+                    <th>Otomatisasi</th>
+                    <th>Power</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .listDevice }}
+                <tr style="height: 50px; vertical-align: middle;">
+                    <td>{{ .Device_name }}</td>
+                    <td>{{ .Mode_name }}</td>
+                    <td>{{ .Date_updated }}</td>
+                    <td>
+                        <div class="switcher">
+                            <label for="toggle-otomatis-{{ .Device_id }}" {{ if eq .Mode_name `Otomatis`}} onclick="Controlling(`{{ .Device_id }}/{{ .Antares_id }}/2/{{ .Status_id }}`)" {{ else }} onclick="Controlling(`{{ .Device_id }}/{{ .Antares_id }}/1/{{ .Status_id }}`)" {{ end }}>
+                              <input type="checkbox" 
+                                {{ if eq .Mode_name `Otomatis` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .Device_id }}"/><span><small></small></span>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="switcher {{ if eq .Mode_name `Otomatis` }} disabled-switcher {{ else }} {{ end }}">
+                            <label for="toggle-manual-{{ .Device_id }}" {{ if eq .Status_name `Aktif`}} onclick="Controlling(`{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/10`)" {{ else }} onclick="Controlling(`{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/11`)" {{ end }} >
+                              <input type="checkbox" {{ if eq .Status_name `Aktif`}} checked {{ else }} {{ end }} id="toggle-manual-{{ .Device_id }}"/><span><small></small></span>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-3">
+                            <a href="#">Detail</a>
+                            <a href="#">Hapus</a>
+                        </div>
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{ end }}

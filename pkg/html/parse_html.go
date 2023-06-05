@@ -27,9 +27,3 @@ func Render(templatesDir string) multitemplate.Renderer {
 	}
 	return r
 }
-
-func ManualRender(tmpDir string) multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
-	r.AddFromFiles("product", tmpDir+"product/product_index.html", tmpDir+"layouts/base.html")
-	return r
-}

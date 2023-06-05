@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (n *repository) GetLatestCon(token string) (models.Received, error) {
+func (r *repository) GetLatestCon(token string) (models.Received, error) {
 	data := models.Received{}
 
 	client := http.Client{}
@@ -32,7 +32,14 @@ func (n *repository) GetLatestCon(token string) (models.Received, error) {
 	return data, err
 }
 
-func (n *repository) BindSensorData(DeviceId string, input models.ConnectionDat) error {
+func (r *repository) BindSensorData(DeviceId string, input models.ConnectionDat) error {
 	// err := n.db.Exec("INSERT INTO history (device_id, temp, ph, date_updated) VALUES (?,?,?,?)", DeviceId, input.Temp, input.Ph, time.Now()).Error
 	return nil
+}
+
+func (r *repository) GetAllDevices() ([]models.Device, error) {
+	var device []models.Device
+
+	err := r.db.Raw("select * from devices d inner join device_status ds ON d.status_id = ds.status_id inner join device_mode dm on d.mode_id = dm.mode_id").Scan(&device).Error
+	return device, err
 }

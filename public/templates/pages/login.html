@@ -1,0 +1,36 @@
+{{ define "content" }}
+<div class="login-container">
+    <div class="row justify-content-around">
+        <div class="col-4 banner-login">
+        </div>
+        <div class="col-md-8 col-12">
+            <div class="card-wrapper d-flex justify-content-center align-items-center h-100">
+                <div class="card login-card" style="width: 400px;">
+                    <h1>Let's Begin</h1>
+                    {{ if eq .message "" }}
+                    {{ else }}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <div>{{ .message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {{ end }}
+                    <div class="card-body">
+                        <img src="/img/guppytech-logo.svg" alt="guppytech-logo" class="mb-5">
+                        <form id="loginPage" method="POST" action="/login">
+                            <div class="mb-3">
+                              <label for="email" class="form-label">Email address</label>
+                              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Masukkan Email Anda">
+                            </div>
+                            <div class="mb-3">
+                              <label for="password" class="form-label">Password</label>
+                              <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password Anda">
+                            </div>
+                            <button type="submit" class="btn btn-guppytech w-100 mt-3">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

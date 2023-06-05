@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-func (n *service) GetLatestCon(token string) (models.Received, error) {
-	getLatestData, err := n.repository.GetLatestCon(token)
+func (s *service) GetLatestCon(token string) (models.Received, error) {
+	getLatestData, err := s.repository.GetLatestCon(token)
 	return getLatestData, err
 }
 
-func (n *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) (models.ConnectionDat, error) {
+func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) (models.ConnectionDat, error) {
 	var data models.ConnectionDat
 	err := json.Unmarshal([]byte(sensorData), &data)
 	if err != nil {
@@ -19,6 +19,10 @@ func (n *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 		return data, err
 	}
 	fmt.Println("Data sensor terbaru :", data)
-	err = n.repository.BindSensorData(antaresDeviceID, data)
+	err = s.repository.BindSensorData(antaresDeviceID, data)
 	return data, err
+}
+
+func (s *service) GetAllDevices() ([]models.Device, error) {
+	return s.repository.GetAllDevices()
 }

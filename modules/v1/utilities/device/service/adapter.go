@@ -8,6 +8,7 @@ import (
 type Service interface {
 	GetLatestCon(token string) (models.Received, error)
 	GetDatafromWebhook(sensorData string, antaresDeviceID string) (models.ConnectionDat, error)
+	GetAllDevices() ([]models.Device, error)
 }
 
 type service struct {

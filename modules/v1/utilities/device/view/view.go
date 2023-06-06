@@ -24,3 +24,15 @@ func (h *deviceView) ListDevice(c *gin.Context) {
 		"listDevice": ListDevice,
 	})
 }
+
+func (h *deviceView) Report(c *gin.Context) {
+	History, err := h.deviceService.GetDeviceHistory()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	c.HTML(http.StatusOK, "report.html", gin.H{
+		"title":   "Laporan",
+		"history": History,
+	})
+}

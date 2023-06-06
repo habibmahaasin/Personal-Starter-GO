@@ -34,8 +34,34 @@ function Controlling(condition){
 }
 
 $(document).ready(function () {
-    $('#guppytech-table').DataTable({
+    $('#guppytech-table.report-page').DataTable({
       order: [[0, 'desc']],
+      scrollX: true,
+      "pageLength": 5,
+      "lengthMenu": [
+          [5,10, 25, 50, -1],
+          [5,10, 25, 50, 'All'],
+      ],
+      "pagingType": 'full',
+      "language": {
+          "emptyTable": "Data Pengguna kosong",
+          "zeroRecords": "Data tidak ditemukan",
+          "lengthMenu": "Baris per halaman _MENU_ ",
+          "info": " _START_ - _END_ dari _TOTAL_ ",
+          "loadingRecords": "Loading ..",
+          "paginate": {
+              'previous': "<i class='bx bx-chevron-left bx-sm'></i>",
+              'next': "<i class='bx bx-chevron-right bx-sm'></i>",
+              "first": "<i class='bx bx-chevrons-left bx-sm'></i>",
+              "last": "<i class='bx bx-chevrons-right bx-sm'></i>"
+          }
+      }
+    });
+});
+
+$(document).ready(function () {
+    $('#guppytech-table.list-device').DataTable({
+      order: [[0, 'asc']],
       scrollX: true,
       "pageLength": 5,
       "lengthMenu": [

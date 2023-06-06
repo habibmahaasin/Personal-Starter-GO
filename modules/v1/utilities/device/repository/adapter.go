@@ -8,8 +8,12 @@ import (
 
 type Repository interface {
 	GetLatestCon(token string) (models.Received, error)
-	BindSensorData(DeviceId string, input models.ConnectionDat) error
+	BindSensorData(Device_id string, input models.ConnectionDat) error
 	GetAllDevices() ([]models.Device, error)
+	GetDeviceByAntares(antaresDeviceID string) (models.Device, error)
+	GetDeviceHistory() ([]models.DeviceHistory, error)
+	Control(id string, power string, mode string) error
+	PostControlAntares(antares_id string, token string, power string, mode string) error
 }
 
 type repository struct {

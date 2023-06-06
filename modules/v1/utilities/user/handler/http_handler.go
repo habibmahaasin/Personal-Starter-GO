@@ -41,3 +41,16 @@ func (n *userHandler) Login(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, "/")
 }
+
+func (n *userHandler) Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:   "message",
+		MaxAge: -1,
+	})
+
+	c.Redirect(http.StatusFound, "/login")
+}

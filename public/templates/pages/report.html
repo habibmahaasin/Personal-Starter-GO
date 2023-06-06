@@ -1,0 +1,35 @@
+{{ define "content" }}
+<div class="content-container-large">
+    <div class="header-container-large d-flex justify-content-between">
+      <h1 class="page-title">{{ .title }}</h1>
+    </div>
+    <div class="table-responsive overflow-scroll">
+        <table id="guppytech-table" class="table table-striped report-page" style="width:100%">
+            <thead>
+                <tr style="height: 50px; vertical-align: middle;">
+                    <th>History Date</th>
+                    <th>Nama Perangkat</th>
+                    <th>Status Device</th>
+                    <th>Mode</th>
+                    <th>Temperature</th>
+                    <th>pH</th>
+                    <th>Dissolved Oxygen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .history }}
+                <tr style="height: 50px; vertical-align: middle;">
+                    <td>{{ .History_date_formatter }}</td>
+                    <td>{{ .History_device_name }}</td>
+                    <td>{{ .History_status_name }}</td>
+                    <td>{{ .History_mode_name }}</td>
+                    <td>{{ .History_temperature }}</td>
+                    <td>{{ .History_ph }}</td>
+                    <td>{{ .History_dissolved_oxygen }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{ end }}

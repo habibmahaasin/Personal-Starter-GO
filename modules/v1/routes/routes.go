@@ -28,18 +28,21 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	userHandlerV1 := userHandlerV1.Handler(db)
 	userViewV1 := userViewV1.View(db)
 
-	// Routing Website Service
-	device := router.Group("/", basic.Auth(conf))
-	device.GET("/login", middlewares.LoggedIn(), userViewV1.Login)
-	device.POST("/login", userHandlerV1.Login)
-
-	device.GET("/", middlewares.IsLogin(), deviceViewV1.Index)
-	device.GET("/daftar-perangkat", middlewares.IsLogin(), deviceViewV1.ListDevice)
-
 	//Routing API Service
 	api := router.Group("/api/v1")
 	api.GET("/antares-data", deviceHandlerV1.ReceivedData)
 	api.POST("/webhook", deviceHandlerV1.SubscribeWebhook)
+
+	// Routing Website Service
+	device := router.Group("/", basic.Auth(conf))
+	device.GET("/login", middlewares.LoggedIn(), userViewV1.Login)
+	device.POST("/login", userHandlerV1.Login)
+	device.GET("/logout", userHandlerV1.Logout)
+
+	device.GET("/", middlewares.IsLogin(), deviceViewV1.Index)
+	device.GET("/daftar-perangkat", middlewares.IsLogin(), deviceViewV1.ListDevice)
+	device.GET("/laporan", middlewares.IsLogin(), deviceViewV1.Report)
+	device.GET("/control/:id/:antares/:mode/:power", middlewares.IsLogin(), deviceHandlerV1.Control)
 	router = ParseTmpl(router)
 	return router
 }

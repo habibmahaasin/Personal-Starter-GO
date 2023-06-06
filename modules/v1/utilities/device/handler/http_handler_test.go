@@ -16,6 +16,11 @@ import (
 	"gorm.io/gorm"
 )
 
+func SetUpRouter() *gin.Engine {
+	app := gin.Default()
+	return app
+}
+
 func SetupDB() *gorm.DB {
 	dsn := "host=satao.db.elephantsql.com user=dwbejsql password=Kb48I9w7spTcFsiPCP2tPHeR9mhm3Ds1 dbname=dwbejsql port=5432 TimeZone=Asia/Jakarta"
 	Db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -31,11 +36,6 @@ func SetupHandler() *deviceHandler {
 	Service := service.NewService(Repository)
 	Handler := NewDeviceHandler(Service)
 	return Handler
-}
-
-func SetUpRouter() *gin.Engine {
-	app := gin.Default()
-	return app
 }
 
 func Test_SubscribeWebhook(t *testing.T) {

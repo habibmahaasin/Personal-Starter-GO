@@ -2,6 +2,7 @@ package handler
 
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
+	api "GuppyTech/pkg/api_response"
 	"GuppyTech/pkg/helpers"
 	"fmt"
 	"net/http"
@@ -25,15 +26,19 @@ func (n *deviceHandler) ReceivedData(c *gin.Context) {
 func (n *deviceHandler) SubscribeWebhook(c *gin.Context) {
 	var webhookData models.ObjectAntares1
 	if err := c.ShouldBindJSON(&webhookData); err != nil {
-		response := helpers.APIRespon("Error, inputan tidak sesuai", 220, "error", nil)
+		response := helpers.APIRespon("Error, Format Input Tidak Sesuai", 220, "error", nil)
 		c.JSON(220, response)
 		return
 	}
 	Antares_Device_Id := strings.Replace(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Pi, "/antares-cse/cnt-", "", -1)
-	_, err := n.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
+	Input, err := n.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
 	if err != nil {
-		fmt.Println(err)
+		response := api.APIRespon("Error, Please Check "+err.Error(), 500, "error", nil)
+		c.JSON(500, response)
+		return
+	} else {
+		response := api.APIRespon("Success", 200, "success", Input)
+		c.JSON(200, response)
 		return
 	}
-	// fmt.Println(Antares_Device_Id)
 }

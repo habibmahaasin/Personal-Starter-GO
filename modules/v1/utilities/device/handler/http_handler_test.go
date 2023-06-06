@@ -46,15 +46,16 @@ func Test_SubscribeWebhook(t *testing.T) {
 		response   string
 	}{
 		{
-			name: "Success Input Data",
-			inputJSON: `{
+			name: "Success",
+			inputJSON: `
+			{
 				"m2m:sgn" : {
-				   "m2m:nev" : {
-					  "m2m:rep" : {
-						 "m2m:cin" : {
-							"rn" : "cin_b7NDksZhTsWEmLg0",
+					"m2m:nev" : {
+						"m2m:rep" : {
+							"m2m:cin" : {
+							"rn" : "cin_b7NDksZhTsWEmLgw",
 							"ty" : 4,
-							"ri" : "/antares-cse/cin-b7NDksZhTsWEmLg0",
+							"ri" : "/antares-cse/cin-b7NDksZhTsWEmLgw",
 							"pi" : "/antares-cse/cnt-ps9t5UiX15TVLxYB",
 							"ct" : "20220405T160104",
 							"lt" : "20220405T160104",
@@ -62,16 +63,49 @@ func Test_SubscribeWebhook(t *testing.T) {
 							"cnf" : "text/plain:0",
 							"cs" : 266,
 							"con" : "{\"aeratorMode\":0,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":0}"
-						 }
-					  },
-					  "m2m:rss" : 1
-				   },
-				   "m2m:sud" : false,
-				   "m2m:sur" : "/antares-cse/sub-HQ5_ZGw6Ts6SUnrz"
+							}
+						},
+						"m2m:rss" : 1
+					},
+					"m2m:sud" : false,
+					"m2m:sur" : "/antares-cse/sub-HQ5_ZGw6Ts6SUnrz"
 				}
-			 }`,
+			}
+			`,
 			statusCode: 200,
-			response:   ``,
+			response:   `{"meta":{"message":"Success","code":200,"status":"success"},"data":{"aeratorMode":0,"statusDevice":0,"temperature":28.375,"ph":21.97006,"dissolvedOxygen":50.34506,"Device_id":""}}`,
+		},
+		{
+			name: "Format Input Tidak Sesuai",
+			inputJSON: `
+			{
+				"m2m:cin" : {
+					"cnf" : "text/plain:0",
+					"cs" : 266,
+				}
+			}
+			`,
+			statusCode: 220,
+			response:   `{"meta":{"message":"Error, Format Input Tidak Sesuai","code":220,"status":"error"},"data":null}`,
+		},
+		{
+			name: "Unexpected end of JSON input",
+			inputJSON: `
+			{
+				"rn" : "cin_b7NDksZhTsWEmLgw",
+				"ty" : 4,
+				"ri" : "/antares-cse/cin-b7NDksZhTsWEmLgw",
+				"pi" : "/antares-cse/cnt-ps9t5UiX15TVLxYB",
+				"ct" : "20220405T160104",
+				"lt" : "20220405T160104",
+				"st" : 0,
+				"cnf" : "text/plain:0",
+				"cs" : 266,
+				"con" : "{\"aeratorMode\":0,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":0}"
+			}
+			`,
+			statusCode: 500,
+			response:   `{"meta":{"message":"Error, Please Check unexpected end of JSON input","code":500,"status":"error"},"data":null}`,
 		},
 	}
 	r := SetUpRouter()

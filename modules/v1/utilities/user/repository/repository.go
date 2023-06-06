@@ -1,16 +1,10 @@
 package repository
 
-import (
-	"gorm.io/gorm"
-)
+import "GuppyTech/modules/v1/utilities/user/models"
 
-type Repository interface {
-}
+func (r *repository) GetUserByEmail(email string) (models.User, error) {
+	var user models.User
 
-type repository struct {
-	db *gorm.DB
-}
-
-func NewRepository(db *gorm.DB) *repository {
-	return &repository{db}
+	err := r.db.Where("email = ?", email).Find(&user).Error
+	return user, err
 }

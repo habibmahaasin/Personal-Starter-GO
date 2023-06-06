@@ -7,13 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *deviceView) Login(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"title":   "Login",
-		"message": "",
-	})
-}
-
 func (h *deviceView) Index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title": "Beranda",

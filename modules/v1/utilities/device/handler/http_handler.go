@@ -33,6 +33,7 @@ func (n *deviceHandler) SubscribeWebhook(c *gin.Context) {
 	Antares_Device_Id := strings.Replace(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Pi, "/antares-cse/cnt-", "", -1)
 	Input, err := n.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
 	if err != nil {
+		fmt.Println(err)
 		response := api.APIRespon("Error, Please Check "+err.Error(), 500, "error", nil)
 		c.JSON(500, response)
 		return

@@ -7,11 +7,6 @@ import (
 	"time"
 )
 
-func (s *service) GetLatestCon(token string) (models.Received, error) {
-	getLatestData, err := s.repository.GetLatestCon(token)
-	return getLatestData, err
-}
-
 func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) (models.ConnectionDat, error) {
 	var data models.ConnectionDat
 	err := json.Unmarshal([]byte(sensorData), &data)
@@ -29,6 +24,7 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 		data.Status_device = 10
 	}
 
+	fmt.Println(data)
 	err = s.repository.BindSensorData(getDetailDevice.Device_id, data)
 	return data, err
 }

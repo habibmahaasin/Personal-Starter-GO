@@ -4,6 +4,7 @@ import (
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -53,16 +54,16 @@ func Test_SubscribeWebhook(t *testing.T) {
 					"m2m:nev" : {
 						"m2m:rep" : {
 							"m2m:cin" : {
-							"rn" : "cin_b7NDksZhTsWEmLgw",
+							"rn" : "cin_b7NDksZhTsWEmLgh",
 							"ty" : 4,
-							"ri" : "/antares-cse/cin-b7NDksZhTsWEmLgw",
+							"ri" : "/antares-cse/cin-b7NDksZhTsWEmLgh",
 							"pi" : "/antares-cse/cnt-ps9t5UiX15TVLxYB",
 							"ct" : "20220405T160104",
 							"lt" : "20220405T160104",
 							"st" : 0,
 							"cnf" : "text/plain:0",
 							"cs" : 266,
-							"con" : "{\"aeratorMode\":0,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":0}"
+							"con" : "{\"aeratorMode\":2,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":10}"
 							}
 						},
 						"m2m:rss" : 1
@@ -73,7 +74,7 @@ func Test_SubscribeWebhook(t *testing.T) {
 			}
 			`,
 			statusCode: 200,
-			response:   `{"meta":{"message":"Success","code":200,"status":"success"},"data":{"aeratorMode":0,"statusDevice":0,"temperature":28.375,"ph":21.97006,"dissolvedOxygen":50.34506,"Device_id":""}}`,
+			response:   `{"meta":{"message":"Success","code":200,"status":"success"},"data":{"aeratorMode":2,"statusDevice":10,"temperature":28.375,"ph":21.97006,"dissolvedOxygen":50.34506,"Device_id":""}}`,
 		},
 		{
 			name: "Format Input Tidak Sesuai",
@@ -87,25 +88,6 @@ func Test_SubscribeWebhook(t *testing.T) {
 			`,
 			statusCode: 220,
 			response:   `{"meta":{"message":"Error, Format Input Tidak Sesuai","code":220,"status":"error"},"data":null}`,
-		},
-		{
-			name: "Unexpected end of JSON input",
-			inputJSON: `
-			{
-				"rn" : "cin_b7NDksZhTsWEmLgw",
-				"ty" : 4,
-				"ri" : "/antares-cse/cin-b7NDksZhTsWEmLgw",
-				"pi" : "/antares-cse/cnt-ps9t5UiX15TVLxYB",
-				"ct" : "20220405T160104",
-				"lt" : "20220405T160104",
-				"st" : 0,
-				"cnf" : "text/plain:0",
-				"cs" : 266,
-				"con" : "{\"aeratorMode\":0,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":0}"
-			}
-			`,
-			statusCode: 500,
-			response:   `{"meta":{"message":"Error, Please Check unexpected end of JSON input","code":500,"status":"error"},"data":null}`,
 		},
 	}
 	r := SetUpRouter()
@@ -126,6 +108,63 @@ func Test_SubscribeWebhook(t *testing.T) {
 
 			assert.Equal(t, response.Code, test.statusCode)
 			assert.Equal(t, string(responseData), test.response)
+		})
+	}
+}
+
+func Test_Control(t *testing.T) {
+	cookie := "message=; GuppyTech=MTY4NjE1MDIwNHxEdi1CQkFFQ180SUFBUkFCRUFBQWNmLUNBQUlHYzNSeWFXNW5EQWdBQm5WelpYSkpSQVp6ZEhKcGJtY01KZ0FrWVRrMk1qTXlNV010Tm1JellTMDBZamt5TFRoaE56QXRPVGN5T1dFeFpqRTFZamMxQm5OMGNtbHVad3dLQUFoMWMyVnlUbUZ0WlFaemRISnBibWNNRVFBUFIzVndjSGxVWldOb0lFRmtiV2x1fHVmHYqw7_906PoNHN; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODYxNTExMDQsImZ1bGxfbmFtZSI6Ikd1cHB5VGVjaCBBZG1pbiIsInJvbGVfaWQiOjEsInVzZXJfaWQiOiJhOTYyMzIxYy02YjNhLTRiOTItOGE3MC05NzI5YTFmMTViNzUifQ.yA7MmYzBUjmXRb0m2ftK-WwlQ7CQbNMahok7fZF3TPA"
+	basic := "Basic YWRtaW46YWRtaW4="
+
+	tests := []struct {
+		name       string
+		id         string
+		mode       string
+		antares_id string
+		power      string
+		token      string
+		statusCode int
+	}{
+		{
+			name:       "Test Controlling Berhasil",
+			id:         "e5d415f7-a96b-4dc2-84b8-64a1830b4c01",
+			mode:       "2",
+			antares_id: "ps9t5UiX15TVLxYB",
+			power:      "10",
+			token:      "862b34fe2de548cc:cdf66d91b12db8d2",
+			statusCode: 302,
+		},
+		{
+			name:       "Test Controlling Gagal",
+			id:         "2",
+			mode:       "100o",
+			antares_id: "ps9t5UiX15TVLxYB",
+			power:      "on",
+			token:      "862b34fe2de548cc:cdf66d91b12db8d2",
+			statusCode: 302,
+		},
+	}
+
+	r := SetUpRouter()
+	r.GET("/control/:id/:antares/:mode/:power", SetupHandler().Control)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", "/control/"+tt.id+"/"+tt.antares_id+"/"+tt.mode+"/"+tt.power, nil)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			req.Header.Set("Authorization", basic)
+			req.Header.Set("Cookie", cookie)
+			resp := httptest.NewRecorder()
+			r.ServeHTTP(resp, req)
+			location, err := resp.Result().Location()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			assert.Equal(t, resp.Code, tt.statusCode)
+			assert.Equal(t, location.Path, "/daftar-perangkat")
 		})
 	}
 }

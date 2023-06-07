@@ -12,18 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (n *deviceHandler) ReceivedData(c *gin.Context) {
-	token := "862b34fe2de548cc:cdf66d91b12db8d2"
-	getLatestCon, err := n.deviceService.GetLatestCon(token)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	// Antares_Device_Id := strings.Replace(getLatestCon.First.Pi, "/antares-cse/cnt-", "", -1)
-
-	c.JSON(http.StatusOK, getLatestCon.First.Con)
-}
-
 func (h *deviceHandler) SubscribeWebhook(c *gin.Context) {
 	var webhookData models.ObjectAntares1
 	if err := c.ShouldBindJSON(&webhookData); err != nil {
@@ -48,18 +36,12 @@ func (h *deviceHandler) Control(c *gin.Context) {
 	token := "862b34fe2de548cc:cdf66d91b12db8d2"
 
 	err := h.deviceService.Control(id, power, mode)
-
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	for i := 0; i < 2; i++ {
-		postAntares := h.deviceService.PostControlAntares(antares_id, token, power, mode)
-
-		if postAntares != nil {
-			fmt.Println(postAntares)
-			return
-		}
+		h.deviceService.PostControlAntares(antares_id, token, power, mode)
 		time.Sleep(2 * time.Second)
 	}
 

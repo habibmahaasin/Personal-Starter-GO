@@ -2,11 +2,12 @@ package config
 
 type Conf struct {
 	App struct {
-		Name       string `env:"APP_NAME"`
-		Port       string `env:"APP_PORT"`
-		Mode       string `env:"APP_MODE"`
-		Url        string `env:"APP_URL"`
-		Secret_key string `env:"APP_SECRET"`
+		Name           string `env:"APP_NAME"`
+		Port           string `env:"APP_PORT"`
+		Mode           string `env:"APP_MODE"`
+		Url            string `env:"APP_URL"`
+		Secret_key     string `env:"APP_SECRET"`
+		App_antars_url string `env:"APPLICATION_ANTARES_URL"`
 	}
 	Db struct {
 		Host string `env:"DB_HOST"`

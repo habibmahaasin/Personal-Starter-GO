@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) error {
-	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, history_date) VALUES (?,?,?,?,?,?,?)", input.Status_device, input.Device_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, time.Now()).Error
-	err = r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, date_updated = ? WHERE device_id = ?", input.Status_device, input.Device_mode, time.Now(), Device_id).Error
-	return err
+func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) (error, error) {
+	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, history_date) VALUES (?,?,?,?,?,?,now())", input.Status_device, input.Device_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen).Error
+	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, date_updated = now() WHERE device_id = ?", input.Status_device, input.Device_mode, Device_id).Error
+	return err, err2
 }
 
 func (r *repository) GetAllDevices() ([]models.Device, error) {
@@ -23,7 +23,7 @@ func (r *repository) GetAllDevices() ([]models.Device, error) {
 
 func (r *repository) GetDeviceByAntares(antaresDeviceID string) (models.Device, error) {
 	var device models.Device
-	err := r.db.Where("antares_id = ?", antaresDeviceID).Find(&device).Error
+	err := r.db.Raw("select * from devices where antares_id = ?", antaresDeviceID).Scan(&device).Error
 	return device, err
 }
 
@@ -34,7 +34,7 @@ func (r *repository) GetDeviceHistory() ([]models.DeviceHistory, error) {
 }
 
 func (r *repository) Control(id string, power string, mode string) error {
-	err := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, date_updated = ? WHERE device_id = ?", power, mode, time.Now(), id).Error
+	err := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, date_updated = now() WHERE device_id = ?", power, mode, id).Error
 	return err
 }
 

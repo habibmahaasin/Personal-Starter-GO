@@ -7,6 +7,7 @@
         <table id="guppytech-table" class="table table-striped report-page" style="width:100%">
             <thead>
                 <tr style="height: 50px; vertical-align: middle;">
+                    <th style="display: none;"></th>
                     <th>History Date</th>
                     <th>Nama Perangkat</th>
                     <th>Status Device</th>
@@ -19,6 +20,7 @@
             <tbody>
                 {{ range .history }}
                 <tr style="height: 50px; vertical-align: middle;">
+                    <td style="display: none;">{{ .History_date }}</td>
                     <td>{{ .History_date_formatter }}</td>
                     <td>{{ .History_device_name }}</td>
                     <td>{{ .History_status_name }}</td>

@@ -27,9 +27,9 @@ type AntaresDetail struct {
 type ConnectionDat struct {
 	Device_mode      int     `json:"aeratorMode"`
 	Status_device    int     `json:"statusDevice"`
-	Temperature      float32 `json:"temperature"`
-	Ph               float32 `json:"ph"`
-	Dissolved_oxygen float32 `json:"dissolvedOxygen"`
+	Temperature      float64 `json:"temperature"`
+	Ph               float64 `json:"ph"`
+	Dissolved_oxygen float64 `json:"dissolvedOxygen"`
 	Device_id        string
 }
 

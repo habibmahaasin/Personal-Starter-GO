@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	BindSensorData(Device_id string, input models.ConnectionDat) error
+	BindSensorData(Device_id string, input models.ConnectionDat) (error, error)
 	GetAllDevices() ([]models.Device, error)
 	GetDeviceByAntares(antaresDeviceID string) (models.Device, error)
 	GetDeviceHistory() ([]models.DeviceHistory, error)

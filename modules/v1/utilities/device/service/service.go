@@ -25,7 +25,7 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 	}
 
 	fmt.Println(data)
-	err = s.repository.BindSensorData(getDetailDevice.Device_id, data)
+	err, _ = s.repository.BindSensorData(getDetailDevice.Device_id, data)
 	return data, err
 }
 

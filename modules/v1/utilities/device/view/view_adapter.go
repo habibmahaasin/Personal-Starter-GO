@@ -1,6 +1,7 @@
 package view
 
 import (
+	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
 
@@ -15,8 +16,8 @@ func NewDeviceView(deviceService service.Service) *deviceView {
 	return &deviceView{deviceService}
 }
 
-func View(db *gorm.DB) *deviceView {
-	Repository := repository.NewRepository(db)
+func View(db *gorm.DB, conf config.Conf) *deviceView {
+	Repository := repository.NewRepository(db, conf)
 	Service := service.NewService(Repository)
 	View := NewDeviceView(Service)
 	return View

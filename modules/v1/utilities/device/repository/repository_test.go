@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/models"
 	"database/sql"
 	"net/http"
@@ -20,6 +21,7 @@ import (
 type Suite struct {
 	suite.Suite
 	DB         *gorm.DB
+	config     config.Conf
 	mock       sqlmock.Sqlmock
 	repository *repository
 }
@@ -39,8 +41,17 @@ func (s *Suite) SetupSuite() {
 	require.NoError(s.T(), err)
 
 	s.DB.Logger.LogMode(1)
+	s.config = config.Conf{
+		App: config.App{
+			Name:       "GuppyTech",
+			Port:       "8080",
+			Mode:       "Test",
+			Url:        "http://localhost",
+			Secret_key: "GuppyTest",
+		},
+	}
 
-	s.repository = NewRepository(s.DB)
+	s.repository = NewRepository(s.DB, s.config)
 }
 
 func (s *Suite) AfterTest(_, _ string) {
@@ -158,44 +169,50 @@ func (s *Suite) Test_repository_PostControlAntares() {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer serverCase1.Close()
+	s.config.App.Antares_url = serverCase1.URL
 	repo := repository{
 		s.DB,
+		s.config,
 	}
 	err := repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
 	require.NoError(s.T(), err)
 
-	// //error case http.NewRequest()
-	// serverCase2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	w.WriteHeader(http.StatusOK)
-	// }))
-	// defer serverCase2.Close()
+	//error case http.NewRequest()
+	serverCase2 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer serverCase2.Close()
+	s.config.App.Antares_url = serverCase1.URL + "error"
+	repo = repository{
+		s.DB,
+		s.config,
+	}
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
+	require.Error(s.T(), err)
 
-	// repo = repository{
-	// 	s.DB,
-	// }
-	// err = repo.ManualControl("15", "lga4541000000814")
-	// require.Error(s.T(), err)
+	//error case client.Do()
+	serverCase3 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer serverCase3.Close()
+	s.config.App.Antares_url = "serverCase3.URL"
+	repo = repository{
+		s.DB,
+		s.config,
+	}
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
+	require.Error(s.T(), err)
 
-	// //error case client.Do()
-	// serverCase3 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	w.WriteHeader(http.StatusOK)
-	// }))
-	// defer serverCase3.Close()
-	// repo = repository{
-	// 	s.DB,
-	// }
-	// err = repo.ManualControl("15", "/lga4541000000814")
-	// require.Error(s.T(), err)
-
-	// //error case ioutil.ReadAll()
-	// serverCase4 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Header().Set("Content-Length", "1")
-	// }))
-	// defer serverCase4.Close()
-	// repo = repository{
-	// 	s.DB,
-	// 	s.mockUUID,
-	// }
-	// err = repo.ManualControl("15", "/lga4541000000814")
-	// require.Error(s.T(), err)
+	//error case ioutil.ReadAll()
+	serverCase4 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Length", "1")
+	}))
+	defer serverCase4.Close()
+	s.config.App.Antares_url = serverCase4.URL
+	repo = repository{
+		s.DB,
+		s.config,
+	}
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
+	require.Error(s.T(), err)
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
 	"bytes"
@@ -33,7 +34,8 @@ func SetupDB() *gorm.DB {
 }
 
 func SetupHandler() *deviceHandler {
-	Repository := repository.NewRepository(SetupDB())
+	conf, _ := config.Init()
+	Repository := repository.NewRepository(SetupDB(), conf)
 	Service := service.NewService(Repository)
 	Handler := NewDeviceHandler(Service)
 	return Handler

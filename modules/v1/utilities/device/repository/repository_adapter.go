@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/models"
 
 	"gorm.io/gorm"
@@ -16,9 +17,10 @@ type Repository interface {
 }
 
 type repository struct {
-	db *gorm.DB
+	db   *gorm.DB
+	conf config.Conf
 }
 
-func NewRepository(db *gorm.DB) *repository {
-	return &repository{db}
+func NewRepository(db *gorm.DB, conf config.Conf) *repository {
+	return &repository{db, conf}
 }

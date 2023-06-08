@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
 
@@ -15,8 +16,8 @@ func NewDeviceHandler(productService service.Service) *deviceHandler {
 	return &deviceHandler{productService}
 }
 
-func Handler(db *gorm.DB) *deviceHandler {
-	Repository := repository.NewRepository(db)
+func Handler(db *gorm.DB, conf config.Conf) *deviceHandler {
+	Repository := repository.NewRepository(db, conf)
 	Service := service.NewService(Repository)
 	Handler := NewDeviceHandler(Service)
 	return Handler

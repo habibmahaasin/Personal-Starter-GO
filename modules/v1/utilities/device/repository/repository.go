@@ -46,7 +46,7 @@ func (r *repository) PostControlAntares(antares_id string, token string, power s
 		Timeout: timeout,
 	}
 
-	req, err := http.NewRequest("POST", "https://platform.antares.id:8443/~/antares-cse/cnt-"+antares_id, bytes.NewBuffer([]byte(data)))
+	req, err := http.NewRequest("POST", r.conf.App.Antares_url+"/cnt-"+antares_id, bytes.NewBuffer([]byte(data)))
 	if err != nil {
 		return err
 	}

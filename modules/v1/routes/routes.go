@@ -23,8 +23,8 @@ func ParseTmpl(router *gin.Engine) *gin.Engine { //Load HTML Template
 }
 
 func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
-	deviceHandlerV1 := deviceHandlerV1.Handler(db)
-	deviceViewV1 := deviceviewV1.View(db)
+	deviceHandlerV1 := deviceHandlerV1.Handler(db, conf)
+	deviceViewV1 := deviceviewV1.View(db, conf)
 	userHandlerV1 := userHandlerV1.Handler(db)
 	userViewV1 := userViewV1.View(db)
 

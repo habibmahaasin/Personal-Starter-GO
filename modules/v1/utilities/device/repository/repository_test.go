@@ -129,6 +129,7 @@ func (s *Suite) Test_repository_GetDeviceHistory() {
 
 	expectHistory := []models.DeviceHistory{
 		{
+			History_device_id:        "e5d415f7-a96b-4dc2-84b8-64a1830b4c01",
 			History_device_name:      "Aerator Utama",
 			History_status_name:      "Tidak Aktif",
 			History_mode_name:        "Otomatis",
@@ -139,10 +140,10 @@ func (s *Suite) Test_repository_GetDeviceHistory() {
 		},
 	}
 
-	rows := sqlmock.NewRows([]string{"device_name", "status_name", "mode_name", "ph", "temperature", "dissolved_oxygen", "history_date"}).
-		AddRow(expectHistory[0].History_device_name, expectHistory[0].History_status_name, expectHistory[0].History_mode_name, expectHistory[0].History_ph, expectHistory[0].History_temperature, expectHistory[0].History_dissolved_oxygen, expectHistory[0].History_date)
+	rows := sqlmock.NewRows([]string{"device_id", "device_name", "status_name", "mode_name", "ph", "temperature", "dissolved_oxygen", "history_date"}).
+		AddRow(expectHistory[0].History_device_id, expectHistory[0].History_device_name, expectHistory[0].History_status_name, expectHistory[0].History_mode_name, expectHistory[0].History_ph, expectHistory[0].History_temperature, expectHistory[0].History_dissolved_oxygen, expectHistory[0].History_date)
 
-	s.mock.ExpectQuery(regexp.QuoteMeta("select d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id ORDER BY dh.history_id DESC LIMIT 250")).
+	s.mock.ExpectQuery(regexp.QuoteMeta("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id ORDER BY dh.history_id DESC LIMIT 250")).
 		WillReturnRows(rows)
 
 	resp, err := s.repository.GetDeviceHistory()

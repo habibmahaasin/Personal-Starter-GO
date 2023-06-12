@@ -1,7 +1,6 @@
 package view
 
 import (
-	"fmt"
 	"math"
 	"net/http"
 
@@ -56,10 +55,7 @@ func (h *deviceView) Index(c *gin.Context) {
 }
 
 func (h *deviceView) ListDevice(c *gin.Context) {
-	ListDevice, err := h.deviceService.GetAllDevices()
-	if err != nil {
-		fmt.Println(err)
-	}
+	ListDevice, _ := h.deviceService.GetAllDevices()
 
 	c.HTML(http.StatusOK, "list_device.html", gin.H{
 		"title":      "Daftar Perangkat",
@@ -68,10 +64,7 @@ func (h *deviceView) ListDevice(c *gin.Context) {
 }
 
 func (h *deviceView) Report(c *gin.Context) {
-	History, err := h.deviceService.GetDeviceHistory()
-	if err != nil {
-		fmt.Println(err)
-	}
+	History, _ := h.deviceService.GetDeviceHistory()
 
 	c.HTML(http.StatusOK, "report.html", gin.H{
 		"title":   "Laporan",

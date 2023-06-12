@@ -95,3 +95,32 @@ func Test_ListDevice(t *testing.T) {
 		assert.Equal(t, c, true)
 	})
 }
+
+func Test_Report(t *testing.T) {
+	//os.Chdir("../../../../../")
+	conf, err := config.Init()
+	gin.SetMode(conf.App.Mode)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r := SetUpRouter()
+	db := database.Init(conf)
+	deviceViewV1 := View(db, conf)
+	r.GET("/laporan", deviceViewV1.Report)
+
+	t.Run("Berhasil menampilkan halaman Laporan", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/laporan", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		req.Header.Set("Authorization", "Basic YWRtaW46YWRtaW4=")
+		resp := httptest.NewRecorder()
+		r.ServeHTTP(resp, req)
+		body, _ := ioutil.ReadAll(resp.Body)
+		s := string(body)
+
+		c := strings.Contains(s, "Laporan")
+		assert.Equal(t, c, true)
+	})
+}

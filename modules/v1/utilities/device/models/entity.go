@@ -35,6 +35,7 @@ type Device struct {
 }
 
 type DeviceHistory struct {
+	History_device_id        string    `gorm:"column:device_id"`
 	History_device_name      string    `gorm:"column:device_name"`
 	History_status_name      string    `gorm:"column:status_name"`
 	History_mode_name        string    `gorm:"column:mode_name"`

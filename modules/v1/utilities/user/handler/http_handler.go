@@ -32,8 +32,9 @@ func (n *userHandler) Login(c *gin.Context) {
 	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
 	c.SetCookie("Token", token, 3600, "/", "localhost", false, true)
 
-	session.Set("userID", user.User_id)
-	session.Set("userName", user.Full_name)
+	session.Set("email", user.Email)
+	session.Set("full_name", user.Full_name)
+	session.Set("user_id", user.User_id)
 	session.Options(sessions.Options{
 		MaxAge: 3600 * 24,
 	})

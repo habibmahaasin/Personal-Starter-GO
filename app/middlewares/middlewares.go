@@ -10,7 +10,7 @@ import (
 func IsLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		userIDSess := session.Get("userID")
+		userIDSess := session.Get("user_id")
 		if userIDSess == nil {
 			c.Redirect(http.StatusFound, "/login")
 			return
@@ -21,7 +21,7 @@ func IsLogin() gin.HandlerFunc {
 func LoggedIn() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		userIDSess := session.Get("userID")
+		userIDSess := session.Get("user_id")
 		if userIDSess != nil {
 			c.Redirect(http.StatusFound, "/")
 			return

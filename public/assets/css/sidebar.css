@@ -242,7 +242,7 @@ a {
   }
   .user-information-wrapper{
     transform: scale(0.6);
-    margin-right: -55px !important;
+    margin-top: -5px !important;
   }
   #header{
     background: #282689;

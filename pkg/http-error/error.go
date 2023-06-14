@@ -6,7 +6,9 @@ import (
 
 func PageNotFound() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.HTML(404, "error_404.html", nil)
+		c.HTML(404, "error_404.html", gin.H{
+			"title": "Page Not Found",
+		})
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"math"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,8 +42,14 @@ func (h *deviceView) Index(c *gin.Context) {
 	average_ph = average_ph / float64(counter)
 	average_temperature = average_temperature / float64(counter)
 
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":         "Beranda",
+		"email":         user_email,
+		"full_name":     full_name,
 		"listDevice":    ListDevice,
 		"total_devices": total_devices,
 		"total_on":      total_devices_on,
@@ -55,19 +62,30 @@ func (h *deviceView) Index(c *gin.Context) {
 }
 
 func (h *deviceView) ListDevice(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+
 	ListDevice, _ := h.deviceService.GetAllDevices()
 
 	c.HTML(http.StatusOK, "list_device.html", gin.H{
 		"title":      "Daftar Perangkat",
+		"email":      user_email,
+		"full_name":  full_name,
 		"listDevice": ListDevice,
 	})
 }
 
 func (h *deviceView) Report(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
 	History, _ := h.deviceService.GetDeviceHistory()
 
 	c.HTML(http.StatusOK, "report.html", gin.H{
-		"title":   "Laporan",
-		"history": History,
+		"title":     "Laporan",
+		"email":     user_email,
+		"full_name": full_name,
+		"history":   History,
 	})
 }

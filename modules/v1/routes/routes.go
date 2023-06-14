@@ -7,7 +7,6 @@ import (
 	deviceviewV1 "GuppyTech/modules/v1/utilities/device/view"
 	userHandlerV1 "GuppyTech/modules/v1/utilities/user/handler"
 	userViewV1 "GuppyTech/modules/v1/utilities/user/view"
-	basic "GuppyTech/pkg/basic_auth"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -33,7 +32,7 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	api.POST("/webhook", deviceHandlerV1.SubscribeWebhook)
 
 	// Routing Website Service
-	device := router.Group("/", basic.Auth(conf))
+	device := router.Group("/")
 	device.GET("/login", middlewares.LoggedIn(), userViewV1.Login)
 	device.POST("/login", userHandlerV1.Login)
 	device.GET("/logout", userHandlerV1.Logout)

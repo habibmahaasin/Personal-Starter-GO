@@ -13,18 +13,21 @@
   height: 100vh;
 }
 
-.login-card {
+.login-card,
+.nf-card {
   border: none;
   background: transparent;
 }
 
-.login-card h1 {
+.login-card h1,
+.nf-card h1 {
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 24px;
 }
 
-.login-card .card-body {
+.login-card .card-body,
+.nf-card .card-body {
   border: none;
   background-color: #ffffff;
   border-radius: 16px;

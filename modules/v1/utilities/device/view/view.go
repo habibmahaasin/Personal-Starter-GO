@@ -89,3 +89,15 @@ func (h *deviceView) Report(c *gin.Context) {
 		"history":   History,
 	})
 }
+
+func (h *deviceView) AddDevice(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+
+	c.HTML(http.StatusOK, "add_device.html", gin.H{
+		"title":     "Tambah Perangkat",
+		"email":     user_email,
+		"full_name": full_name,
+	})
+}

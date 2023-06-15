@@ -35,7 +35,11 @@
             <i class='bx bx-list-ul nav_icon'></i>
             <span class="nav_name">Daftar Perangkat</span>
           </a>
-          <a href="#" class="nav_link">
+          {{ if (eq .title "Tambah Perangkat") }}
+            <a href="/tambah-perangkat" class="nav_link active">
+          {{ else }}
+            <a href="/tambah-perangkat" class="nav_link">
+          {{ end }}
             <i class='bx bx-cog nav_icon'></i>
             <span class="nav_name">Pengaturan Perangkat</span>
           </a>

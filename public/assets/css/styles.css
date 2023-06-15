@@ -210,6 +210,17 @@ svg {
   color: #4746BD;
 }
 /* end beranda */
+.btn-guppytech {
+  background-color: #4746bd;
+  color: white;
+  padding: 10px;
+  border-radius: 100px;
+}
+
+.btn-guppytech:hover {
+  background-color: #282689;
+  color: white;
+}
 @media screen and (max-width: 768px) {
   #guppytech-table_filter label input {
     width: calc(100vw - 200px);

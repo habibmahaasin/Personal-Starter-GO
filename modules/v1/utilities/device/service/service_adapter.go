@@ -11,6 +11,7 @@ type Service interface {
 	GetDeviceHistory() ([]models.DeviceHistory, error)
 	Control(id string, power string, mode string) error
 	PostControlAntares(antares_id string, token string, power string, mode string) error
+	AddDevice(input models.DeviceInput, user_id string) error
 }
 
 type service struct {

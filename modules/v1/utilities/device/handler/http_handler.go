@@ -5,10 +5,12 @@ import (
 	api "GuppyTech/pkg/api_response"
 	"GuppyTech/pkg/helpers"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -47,4 +49,19 @@ func (h *deviceHandler) Control(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, "/daftar-perangkat")
 	return
+}
+
+func (h *deviceHandler) AddDevice(c *gin.Context) {
+	session := sessions.Default(c)
+	var input models.DeviceInput
+
+	err := c.ShouldBind(&input)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	user_id := session.Get("user_id").(string)
+	err = h.deviceService.AddDevice(input, user_id)
+
+	c.Redirect(http.StatusFound, "/daftar-perangkat")
 }

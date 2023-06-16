@@ -64,3 +64,13 @@ type ObjectAntares2 struct {
 type ObjectAntares1 struct {
 	First ObjectAntares2 `json:"m2m:sgn"`
 }
+
+type DeviceInput struct {
+	Device_name     string `json:"device_name" form:"device_name" binding:"required"`
+	Antares_id      string `json:"antares_id" form:"antares_id" binding:"required"`
+	Device_location string `json:"device_location" form:"device_location" binding:"required"`
+	Latitude        string `json:"latitude" form:"latitude" binding:"required"`
+	Longitude       string `json:"longitude" form:"longitude" binding:"required"`
+	Brand           string `json:"brand" form:"brand" binding:"required"`
+	Mode_id         string `json:"mode_id" form:"mode_id" binding:"required"`
+}

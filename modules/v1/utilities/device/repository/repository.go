@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) (error, error) {
@@ -66,4 +68,10 @@ func (r *repository) PostControlAntares(antares_id string, token string, power s
 	}
 
 	return nil
+}
+
+func (r *repository) AddDevice(input models.DeviceInput, user_id string) error {
+	bindUuid := uuid.New()
+	err := r.db.Exec("INSERT INTO devices (device_id, device_name, antares_id, device_location, status_id, latitude, longitude, brand, user_id, mode_id, date_created, date_updated) VALUES (?,?,?,?,10,?,?,?,?,?,now(),now())", bindUuid, input.Device_name, input.Antares_id, input.Device_location, input.Latitude, input.Longitude, input.Brand, user_id, input.Mode_id).Error
+	return err
 }

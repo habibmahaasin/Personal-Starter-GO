@@ -54,3 +54,7 @@ func (s *service) PostControlAntares(antares_id string, token string, power stri
 	}
 	return s.repository.PostControlAntares(antares_id, token, power, mode)
 }
+
+func (s *service) AddDevice(input models.DeviceInput, user_id string) error {
+	return s.repository.AddDevice(input, user_id)
+}

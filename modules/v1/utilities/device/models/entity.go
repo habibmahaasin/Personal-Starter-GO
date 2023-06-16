@@ -21,7 +21,6 @@ type Device struct {
 	Antares_id      string
 	Device_name     string
 	Device_location string
-	Device_label    string
 	Status_id       string
 	Status_name     string
 	Mode_id         string

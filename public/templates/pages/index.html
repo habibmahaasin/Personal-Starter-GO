@@ -139,14 +139,12 @@
   var history_date = [];
 
   for (i = 0; i < history_data.length; i++) {
-      if (i<50){
-        if (history_data[i].History_temperature != 0 && history_data[i].History_ph != 0) {
+    if (history_data[i].History_temperature != 0 && history_data[i].History_ph != 0) {
           temperature.push(history_data[i].History_temperature.toFixed(2));
           ph.push(history_data[i].History_ph.toFixed(2));
           dissolved_oxygen.push(history_data[i].History_dissolved_oxygen.toFixed(2));
           history_date.push(history_data[i].History_date_formatter);
         }
-      }
   }
   
   var options = {
@@ -198,8 +196,7 @@
     var newDissolvedOxygenValue = [];
     var newDateValue = [];
     for (i = 0; i < history_data.length; i++) {
-      if(i<50){
-        if (history_data[i].History_temperature != 0 && history_data[i].History_ph != 0) {
+      if (history_data[i].History_temperature != 0 && history_data[i].History_ph != 0) {
           if (history_data[i].History_device_id == selectedDevice){
             newTempValue.push(history_data[i].History_temperature.toFixed(2));
             newPhValue.push(history_data[i].History_ph.toFixed(2));
@@ -207,7 +204,6 @@
             newDateValue.push(history_data[i].History_date_formatter);
           }
         }
-      }
     }
     chart.updateSeries([{
       name: 'Temperatur',

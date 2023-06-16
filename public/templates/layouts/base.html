@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
     {{ if or (eq .title "Login") (eq .title "Page Not Found")}}
     <link rel="stylesheet" href="/css/login.css">
     {{ else }} 
@@ -37,69 +39,6 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly" defer ></script>
 <script src="/js/sidebar.js"></script>
 <script src="/js/script.js"></script>
-<script>
-    $('#koor_loc').on('change', function() {
-        if ( this.value == 'curr-loc') {
-            getLocation();
-            $('.manual-loc-form').css('display','none');
-            $('#map').css('display','block');
-        } 
-        else if (this.value == 'input-loc-manual'){
-            $('#map').css('display','none');
-            $('.manual-loc-form').css('display','block');
-        }
-        else if (this.value == 'pin-from-maps'){
-            initMap(-6.901779067052239, 107.61896902369566, 12)
-            $('#map').css('display','block');
-            $('.manual-loc-form').css('display','none');
-        }
-    });
-
-    x = document.getElementById("map");
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-
-    function showPosition(position) {
-        initMap(position.coords.latitude, position.coords.longitude,18);
-    }
-
-    function initMap(latitude,longitude,zoomView) {
-        var latInput = latitude;
-        var longInput = longitude;
-
-        const myLatlng = { lat: latitude, lng: longitude };
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: zoomView,
-            center: myLatlng,
-        });
-
-        let infoWindow = new google.maps.InfoWindow({
-            content: "Click Map Untuk Menentukan Lokasi",
-            position: myLatlng,
-        });
-
-        infoWindow.open(map);
-        map.addListener("click", (mapsMouseEvent) => {
-            infoWindow.close();
-            infoWindow = new google.maps.InfoWindow({
-                position: mapsMouseEvent.latLng,
-            });
-            infoWindow.setContent(
-                JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-            );
-            infoWindow.open(map);
-
-            latInput = mapsMouseEvent.latLng.toJSON().lat;
-            longInput = mapsMouseEvent.latLng.toJSON().lng;
-        });
-    }
-</script>
 </html>

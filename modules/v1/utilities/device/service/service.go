@@ -32,13 +32,15 @@ func (s *service) GetAllDevices() ([]models.Device, error) {
 	return s.repository.GetAllDevices()
 }
 
-func (s *service) GetDeviceHistory() ([]models.DeviceHistory, error) {
+func (s *service) GetDeviceHistory() ([]models.DeviceHistory, string, error) {
 	history, _ := s.repository.GetDeviceHistory()
 	for i, d := range history {
 		dd := &history[i]
 		dd.History_date_formatter = d.History_date.Format(time.ANSIC)
 	}
-	return history, nil
+
+	conv, _ := s.json.Marshal(history)
+	return history, string(conv), nil
 }
 
 func (s *service) Control(id string, power string, mode string) error {

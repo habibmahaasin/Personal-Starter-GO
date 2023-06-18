@@ -4,6 +4,7 @@ import (
 	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
+	myJSON "GuppyTech/pkg/json"
 
 	"gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ func NewDeviceView(deviceService service.Service) *deviceView {
 
 func View(db *gorm.DB, conf config.Conf) *deviceView {
 	Repository := repository.NewRepository(db, conf)
-	Service := service.NewService(Repository)
+	Service := service.NewService(Repository, myJSON.Instance())
 	View := NewDeviceView(Service)
 	return View
 }

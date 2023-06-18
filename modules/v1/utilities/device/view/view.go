@@ -1,6 +1,8 @@
 package view
 
 import (
+	"encoding/json"
+	"fmt"
 	"math"
 	"net/http"
 
@@ -16,7 +18,7 @@ func (h *deviceView) Index(c *gin.Context) {
 	var average_temperature float64
 	var Last_updated_history string
 	ListDevice, _ := h.deviceService.GetAllDevices()
-	History, _ := h.deviceService.GetDeviceHistory()
+	History, GraphHistory, _ := h.deviceService.GetDeviceHistory()
 
 	// count total devices
 	for i := 0; i < len(ListDevice); i++ {
@@ -46,6 +48,12 @@ func (h *deviceView) Index(c *gin.Context) {
 	user_email := session.Get("email")
 	full_name := session.Get("full_name")
 
+	convJsonHistory, _ := json.Marshal(GraphHistory)
+	var JSONHistory interface{}
+	json.Unmarshal(convJsonHistory, &JSONHistory)
+
+	fmt.Println(JSONHistory)
+
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":         "Beranda",
 		"email":         user_email,
@@ -57,7 +65,7 @@ func (h *deviceView) Index(c *gin.Context) {
 		"average_ph":    math.Round(average_ph*100) / 100,
 		"average_temp":  math.Round(average_temperature*100) / 100,
 		"last_updated":  Last_updated_history,
-		"History":       History,
+		"History":       JSONHistory,
 	})
 }
 
@@ -80,7 +88,7 @@ func (h *deviceView) Report(c *gin.Context) {
 	session := sessions.Default(c)
 	user_email := session.Get("email")
 	full_name := session.Get("full_name")
-	History, _ := h.deviceService.GetDeviceHistory()
+	History, _, _ := h.deviceService.GetDeviceHistory()
 
 	c.HTML(http.StatusOK, "report.html", gin.H{
 		"title":     "Laporan",
@@ -97,6 +105,18 @@ func (h *deviceView) AddDevice(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "add_device.html", gin.H{
 		"title":     "Tambah Perangkat",
+		"email":     user_email,
+		"full_name": full_name,
+	})
+}
+
+func (h *deviceView) DetailDevice(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+
+	c.HTML(http.StatusOK, "detail_device.html", gin.H{
+		"title":     "Detail Perangkat",
 		"email":     user_email,
 		"full_name": full_name,
 	})

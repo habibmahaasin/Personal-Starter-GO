@@ -1,0 +1,107 @@
+{{ define "content" }}
+<div class="content-container-large bg-transparent p-0">
+    <div class="main-container pb-4">
+      <div class="row first-summary">
+
+        <div class="col-12 col-lg-5">
+          <div class="card p-lg-4 p-2" style="width: 100%">
+            <div class="card-body p-0">
+                <div id="map" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-3">
+          <div class="card" style="width: 100%">
+            <div class="card-body">
+              <div class="data-device mb-3">
+                <p class="title-data">Data Diperbarui</p>
+                <p class="value-data">2022/08/07 | 13:00:18</p>
+              </div>
+              <div class="data-device mb-3">
+                <p class="title-data">pH saat Ini</p>
+                <p class="value-data">6.5</p>
+              </div>
+              <div class="data-device mb-3">
+                <p class="title-data">Suhu saat Ini</p>
+                <p class="value-data">28 C</p>
+              </div>
+              <div class="data-device mb3">
+                <p class="title-data">DO saat Ini</p>
+                <p class="value-data">20</p>
+              </div>
+              <div class="data-device mb-3">
+                <p class="title-data">Status Air</p>
+                <p class="value-data">Normal</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card" style="width: 100%">
+              <div class="card-body">
+                <div class="data-device mb-3">
+                    <p class="title-data">Nama Perangkat</p>
+                    <p class="value-data">Normal</p>
+                </div>
+                <div class="data-device mb-3">
+                    <p class="title-data">Lokasi Perangkat</p>
+                    <p class="value-data">Normal</p>
+                </div>
+                <div class="data-device mb-3">
+                    <p class="title-data">Merek Perangkat</p>
+                    <p class="value-data">Normal</p>
+                </div>
+                <div class="data-device">
+                    <p class="title-data">Otomatisasi</p>
+                    <div class="power-status d-flex justify-content-between align-middle">
+                        <div>
+                            <p class="value-data">Aktif</p>
+                        </div>
+                        <div class="switcher">
+                            <label for="toggle-manual-power" >
+                              <input type="checkbox" id="toggle-manual-power"/><span><small></small></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="data-device mb-3">
+                    <p class="title-data">Power</p>
+                    <div class="power-status d-flex justify-content-between align-middle">
+                        <div>
+                            <p class="value-data">Aktif</p>
+                        </div>
+                        <div class="switcher">
+                            <label for="toggle-manual-power" >
+                              <input type="checkbox" id="toggle-manual-power"/><span><small></small></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+</div>
+<style>
+    .data-device .title-data{
+        font-size: 14px;
+        color: #9E9E9E;
+        margin-bottom: 5px;
+    }
+</style>
+<script>
+    const map = L.map('map').setView([51.505, -0.09], 13);
+
+    const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    const marker = L.marker([51.5, -0.09]).addTo(map)
+        .bindPopup('Device Location').openPopup();
+</script>
+{{ end }}

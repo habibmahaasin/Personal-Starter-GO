@@ -4,6 +4,7 @@ import (
 	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
+	myJSON "GuppyTech/pkg/json"
 	"bytes"
 	"fmt"
 	"io/ioutil"
@@ -36,7 +37,7 @@ func SetupDB() *gorm.DB {
 func SetupHandler() *deviceHandler {
 	conf, _ := config.Init()
 	Repository := repository.NewRepository(SetupDB(), conf)
-	Service := service.NewService(Repository)
+	Service := service.NewService(Repository, myJSON.Instance())
 	Handler := NewDeviceHandler(Service)
 	return Handler
 }

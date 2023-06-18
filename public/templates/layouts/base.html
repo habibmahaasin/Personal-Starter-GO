@@ -41,4 +41,16 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/sidebar.js"></script>
 <script src="/js/script.js"></script>
+<script>
+    document.querySelector('#value-loc').innerText = truncateText('#value-loc', 28);
+    function truncateText(selector, maxLength) {
+    var element = document.querySelector(selector),
+        truncated = element.innerText;
+
+    if (truncated.length > maxLength) {
+        truncated = truncated.substr(0,maxLength) + '...';
+    }
+    return truncated;
+    }
+</script>
 </html>

@@ -16,23 +16,23 @@
             <div class="card-body">
               <div class="data-device mb-3">
                 <p class="title-data">Data Diperbarui</p>
-                <p class="value-data">2022/08/07 | 13:00:18</p>
+                <p class="value-data">{{ .deviceInfo.Date_updated_formatter }}</p>
               </div>
               <div class="data-device mb-3">
                 <p class="title-data">pH saat Ini</p>
-                <p class="value-data">6.5</p>
+                <p class="value-data">{{ .latest_ph }}</p>
               </div>
               <div class="data-device mb-3">
                 <p class="title-data">Suhu saat Ini</p>
-                <p class="value-data">28 C</p>
+                <p class="value-data">{{ .latest_temp }} &deg;C</p>
               </div>
               <div class="data-device mb3">
                 <p class="title-data">DO saat Ini</p>
-                <p class="value-data">20</p>
+                <p class="value-data">{{ .latest_do }}</p>
               </div>
               <div class="data-device mb-3">
-                <p class="title-data">Status Air</p>
-                <p class="value-data">Normal</p>
+                <p class="title-data">Kode Perangkat IOT</p>
+                <p class="value-data">{{ .deviceInfo.Antares_id }}</p>
               </div>
             </div>
           </div>
@@ -43,65 +43,172 @@
               <div class="card-body">
                 <div class="data-device mb-3">
                     <p class="title-data">Nama Perangkat</p>
-                    <p class="value-data">Normal</p>
+                    <p class="value-data">{{ .deviceInfo.Device_name }}</p>
                 </div>
                 <div class="data-device mb-3">
                     <p class="title-data">Lokasi Perangkat</p>
-                    <p class="value-data">Normal</p>
+                    <p class="value-data" id="value-loc">{{ .deviceInfo.Device_location }}</p>
                 </div>
                 <div class="data-device mb-3">
                     <p class="title-data">Merek Perangkat</p>
-                    <p class="value-data">Normal</p>
+                    <p class="value-data">{{ .deviceInfo.Brand }}</p>
                 </div>
                 <div class="data-device">
                     <p class="title-data">Otomatisasi</p>
                     <div class="power-status d-flex justify-content-between align-middle">
-                        <div>
-                            <p class="value-data">Aktif</p>
-                        </div>
-                        <div class="switcher">
-                            <label for="toggle-manual-power" >
-                              <input type="checkbox" id="toggle-manual-power"/><span><small></small></span>
-                            </label>
-                        </div>
+                      <div>
+                          <p class="value-data">
+                            {{ if eq .deviceInfo.Mode_id `1` }} Aktif {{ else }} Tidak Aktif {{ end }}
+                          </p>
+                      </div>
+                      <div class="switcher">
+                        <label for="toggle-otomatis-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Mode_id `1`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/2/{{ .deviceInfo.Status_id }}')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/1/{{ .deviceInfo.Status_id }}')" {{ end }}>
+                          <input type="checkbox" 
+                            {{ if eq .deviceInfo.Mode_id `1` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
+                        </label>
+                      </div>
                     </div>
                 </div>
                 <div class="data-device mb-3">
                     <p class="title-data">Power</p>
                     <div class="power-status d-flex justify-content-between align-middle">
-                        <div>
-                            <p class="value-data">Aktif</p>
-                        </div>
-                        <div class="switcher">
-                            <label for="toggle-manual-power" >
-                              <input type="checkbox" id="toggle-manual-power"/><span><small></small></span>
-                            </label>
-                        </div>
+                      <div>
+                          <p class="value-data">
+                            {{ if eq .deviceInfo.Status_id `11` }} Aktif {{ else }} Tidak Aktif {{ end }}
+                          </p>
+                      </div>
+                      <div class="switcher {{ if eq .deviceInfo.Mode_id `1` }} disabled-switcher {{ else }} {{ end }}">
+                        <label for="toggle-manual-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Status_id `11`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/10')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/11')" {{ end }}>
+                          <input type="checkbox" 
+                            {{ if eq .deviceInfo.Status_id `11` }} Checked {{ else }} {{ end }} id="toggle-manual-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
+                        </label>
+                      </div>
                     </div>
                 </div>
               </div>
             </div>
         </div>
 
+        <div class="col-12">
+          <div class="card p-lg-4 p-2" style="width: 100%; height: 480px;">
+            <div class="card-body p-0">
+              <h5 class="card-title graph-card p-lg-4 pt-lg-2">Grafik Sensor {{ .deviceInfo.Device_name }}</h5>
+                <div id="chartByid" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="card p-lg-4 p-2" style="width: 100%; height: 480px;">
+            <div class="card-body p-0">
+              <div class="table-responsive overflow-scroll">
+                <table id="guppytech-table" class="table table-striped report-page" style="width:100%">
+                    <thead>
+                        <tr style="height: 50px; vertical-align: middle;">
+                            <th style="display: none;"></th>
+                            <th>History Date</th>
+                            <th>Temperature</th>
+                            <th>pH</th>
+                            <th>Dissolved Oxygen</th>
+                            <th>Mode</th>
+                            <th>Status Device</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .history }}
+                        <tr style="height: 50px; vertical-align: middle;">
+                            <td style="display: none;">{{ .History_date }}</td>
+                            <td>{{ .History_date_formatter }}</td>
+                            <td>{{ .History_temperature }}</td>
+                            <td>{{ .History_ph }}</td>
+                            <td>{{ .History_dissolved_oxygen }}</td>
+                            <td>{{ .History_mode_name }}</td>
+                            <td>{{ .History_status_name }}</td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 </div>
-<style>
-    .data-device .title-data{
-        font-size: 14px;
-        color: #9E9E9E;
-        margin-bottom: 5px;
-    }
-</style>
+
+<!-- Map Configuration -->
 <script>
-    const map = L.map('map').setView([51.505, -0.09], 13);
+    var latitudeDevice = JSON.parse('{{ .latitude }}');
+    var longitudeDevice = JSON.parse('{{ .longitude }}');
+  
+    const map = L.map('map').setView([latitudeDevice, longitudeDevice], 15);
 
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    const marker = L.marker([51.5, -0.09]).addTo(map)
+    const marker = L.marker([latitudeDevice, longitudeDevice]).addTo(map)
         .bindPopup('Device Location').openPopup();
+</script>
+
+<!-- Graph Configuration -->
+<script>
+  var history_data = JSON.parse('{{ .graphHistory }}');
+  var temperature = [];
+  var ph = [];
+  var dissolved_oxygen = [];
+  var history_date = [];
+
+  for (i = 0; i < history_data.length; i++) {
+    if (history_data[i].History_temperature != 0 && history_data[i].History_ph != 0) {
+          temperature.push(history_data[i].History_temperature.toFixed(2));
+          ph.push(history_data[i].History_ph.toFixed(2));
+          dissolved_oxygen.push(history_data[i].History_dissolved_oxygen.toFixed(2));
+          history_date.push(history_data[i].History_date_formatter);
+        }
+  }
+
+  var options = {
+    series: [{
+      name: 'Temperatur',
+      data: temperature.reverse()
+    }, {
+      name: 'pH',
+      data: ph.reverse()
+    },
+    {
+      name: 'Disolved Oxygen',
+      data: dissolved_oxygen.reverse()
+    }],
+    chart: {
+      id: 'myChart',
+      height: 350,
+      type: 'area',
+    },
+    colors:['#4746BD', '#ff521d', '#d8ed9e'],
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'smooth'
+    },
+    xaxis: {
+      type: 'category',
+      categories: history_date.reverse(),
+      labels: {
+        show: false
+      }
+    },
+    tooltip: {
+      x: {
+        format: 'dd/MM/yy HH:mm'
+      },
+    },
+  };
+
+  var chart = new ApexCharts(document.querySelector("#chartByid"), options);
+  chart.render();
 </script>
 {{ end }}

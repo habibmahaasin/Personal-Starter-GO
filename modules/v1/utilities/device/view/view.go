@@ -126,6 +126,7 @@ func (h *deviceView) DetailDevice(c *gin.Context) {
 			latest_ph_value = History[i].History_ph
 			latest_temperature_value = History[i].History_temperature
 			latest_dissolved_oxygen_value = History[i].History_dissolved_oxygen
+			break
 		}
 	}
 

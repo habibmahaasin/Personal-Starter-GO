@@ -24,7 +24,7 @@
                     <td>{{ .Date_updated }}</td>
                     <td>
                         <div class="switcher">
-                            <label for="toggle-otomatis-{{ .Device_id }}" {{ if eq .Mode_name `Otomatis`}} onclick="Controlling('{{ .Device_id }}/{{ .Antares_id }}/2/{{ .Status_id }}')" {{ else }} onclick="Controlling('{{ .Device_id }}/{{ .Antares_id }}/1/{{ .Status_id }}')" {{ end }}>
+                            <label for="toggle-otomatis-{{ .Device_id }}" {{ if eq .Mode_name `Otomatis`}} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/2/{{ .Status_id }}')" {{ else }} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/1/{{ .Status_id }}')" {{ end }}>
                               <input type="checkbox" 
                                 {{ if eq .Mode_name `Otomatis` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .Device_id }}"/><span><small></small></span>
                             </label>
@@ -32,14 +32,14 @@
                     </td>
                     <td>
                         <div class="switcher {{ if eq .Mode_name `Otomatis` }} disabled-switcher {{ else }} {{ end }}">
-                            <label for="toggle-manual-{{ .Device_id }}" {{ if eq .Status_name `Aktif`}} onclick="Controlling('{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/10')" {{ else }} onclick="Controlling('{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/11')" {{ end }} >
+                            <label for="toggle-manual-{{ .Device_id }}" {{ if eq .Status_name `Aktif`}} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/10')" {{ else }} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/{{ .Mode_id }}/11')" {{ end }} >
                               <input type="checkbox" {{ if eq .Status_name `Aktif`}} checked {{ else }} {{ end }} id="toggle-manual-{{ .Device_id }}"/><span><small></small></span>
                             </label>
                         </div>
                     </td>
                     <td>
                         <div class="d-flex gap-3">
-                            <a href="#">Detail</a>
+                            <a href="/detail-perangkat/{{.Device_id}}">Detail</a>
                             <a href="#">Hapus</a>
                         </div>
                     </td>

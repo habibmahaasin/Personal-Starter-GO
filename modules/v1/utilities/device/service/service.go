@@ -59,3 +59,20 @@ func (s *service) PostControlAntares(antares_id string, token string, power stri
 func (s *service) AddDevice(input models.DeviceInput, user_id string) error {
 	return s.repository.AddDevice(input, user_id)
 }
+
+func (s *service) GetDeviceById(u_id string, d_id string) (models.Device, error) {
+	DetailDevice, _ := s.repository.GetDeviceById(u_id, d_id)
+	DetailDevice.Date_updated_formatter = DetailDevice.Date_updated.Format(time.ANSIC)
+	return DetailDevice, nil
+}
+
+func (s *service) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, string, error) {
+	history, _ := s.repository.GetDeviceHistoryById(d_id)
+	for i, d := range history {
+		dd := &history[i]
+		dd.History_date_formatter = d.History_date.Format(time.ANSIC)
+	}
+
+	conv, _ := s.json.Marshal(history)
+	return history, string(conv), nil
+}

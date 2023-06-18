@@ -42,8 +42,8 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	device.GET("/laporan", middlewares.IsLogin(), deviceViewV1.Report)
 	device.GET("/tambah-perangkat", middlewares.IsLogin(), deviceViewV1.AddDevice)
 	device.POST("/tambah-perangkat", middlewares.IsLogin(), deviceHandlerV1.AddDevice)
-	device.GET("/detail-perangkat", middlewares.IsLogin(), deviceViewV1.DetailDevice)
-	device.GET("/control/:id/:antares/:mode/:power", middlewares.IsLogin(), deviceHandlerV1.Control)
+	device.GET("/detail-perangkat/:id", middlewares.IsLogin(), deviceViewV1.DetailDevice)
+	device.GET("/control/:page/:id/:antares/:mode/:power", middlewares.IsLogin(), deviceHandlerV1.Control)
 	router = ParseTmpl(router)
 	return router
 }

@@ -16,7 +16,7 @@ window.onscroll = () => {
   }
 };
 
-function Controlling(condition) {
+function ControllingFromList(condition) {
   var conditionSplitter = condition.split('"').join("");
   Swal.fire({
     title:
@@ -30,6 +30,25 @@ function Controlling(condition) {
       window.location = "/control/" + conditionSplitter;
     } else if (result.isDenied) {
       window.location = "/daftar-perangkat";
+    }
+  });
+}
+
+function ControllingFromDetail(condition) {
+  var conditionSplitter = condition.split('"').join("");
+  var path_id = conditionSplitter.split('/')[1];
+  Swal.fire({
+    title:
+      '<span style="font-size: 16px;font-weight: 400;">Apakah Kamu Yakin Ingin Mengubah Kondisi Perangkat?</span>',
+    showDenyButton: true,
+    confirmButtonText: "Ya",
+    confirmButtonColor: "#282689",
+    denyButtonText: `Tidak`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location = "/control/" + conditionSplitter;
+    } else if (result.isDenied) {
+      window.location = "/detail-perangkat/"+path_id;
     }
   });
 }

@@ -75,3 +75,15 @@ func (r *repository) AddDevice(input models.DeviceInput, user_id string) error {
 	err := r.db.Exec("INSERT INTO devices (device_id, device_name, antares_id, device_location, status_id, latitude, longitude, brand, user_id, mode_id, date_created, date_updated) VALUES (?,?,?,?,10,?,?,?,?,?,now(),now())", bindUuid, input.Device_name, input.Antares_id, input.Device_location, input.Latitude, input.Longitude, input.Brand, user_id, input.Mode_id).Error
 	return err
 }
+
+func (r *repository) GetDeviceById(u_id string, d_id string) (models.Device, error) {
+	var device models.Device
+	err := r.db.Raw("select * from devices d inner join device_status ds ON d.status_id = ds.status_id inner join device_mode dm on d.mode_id = dm.mode_id where d.device_id = ? and user_id = ?", d_id, u_id).Scan(&device).Error
+	return device, err
+}
+
+func (r *repository) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, error) {
+	var DeviceHistory []models.DeviceHistory
+	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.device_id = ? ORDER BY dh.history_id DESC LIMIT 250", d_id).Scan(&DeviceHistory).Error
+	return DeviceHistory, err
+}

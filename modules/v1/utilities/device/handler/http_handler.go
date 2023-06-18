@@ -31,6 +31,7 @@ func (h *deviceHandler) SubscribeWebhook(c *gin.Context) {
 }
 
 func (h *deviceHandler) Control(c *gin.Context) {
+	page := c.Param("page")
 	id := c.Param("id")
 	mode := c.Param("mode")
 	antares_id := c.Param("antares")
@@ -47,7 +48,11 @@ func (h *deviceHandler) Control(c *gin.Context) {
 		time.Sleep(2 * time.Second)
 	}
 
-	c.Redirect(http.StatusFound, "/daftar-perangkat")
+	if page == "detail_perangkat" {
+		c.Redirect(http.StatusFound, "/detail-perangkat/"+id)
+	} else if page == "daftar_perangkat" {
+		c.Redirect(http.StatusFound, "/daftar-perangkat")
+	}
 	return
 }
 

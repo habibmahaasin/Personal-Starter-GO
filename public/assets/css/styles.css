@@ -221,13 +221,16 @@ svg {
   background-color: #282689;
   color: white;
 }
-
 .data-device .title-data{
   margin-bottom: 5px;
   color: #9E9E9E;
   font-size: 14px;
 }
-
+.delete-device button{
+  font-size: 14px;
+  width: 200px;
+  padding: 10px 20px !important;
+}
 @media screen and (max-width: 768px) {
   #guppytech-table_filter label input {
     width: calc(100vw - 200px);

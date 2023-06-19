@@ -17,6 +17,7 @@ type Repository interface {
 	AddDevice(input models.DeviceInput, user_id string) error
 	GetDeviceById(u_id string, d_id string) (models.Device, error)
 	GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, error)
+	DeleteDevice(device_id string) error
 }
 
 type repository struct {

@@ -87,3 +87,9 @@ func (r *repository) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, 
 	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.device_id = ? ORDER BY dh.history_id DESC", d_id).Scan(&DeviceHistory).Error
 	return DeviceHistory, err
 }
+
+func (r *repository) DeleteDevice(device_id string) error {
+	err := r.db.Exec("DELETE FROM device_history WHERE device_id = ?", device_id).Error
+	err = r.db.Exec("DELETE FROM devices WHERE device_id = ?", device_id).Error
+	return err
+}

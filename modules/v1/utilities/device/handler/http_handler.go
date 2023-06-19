@@ -70,3 +70,14 @@ func (h *deviceHandler) AddDevice(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, "/daftar-perangkat")
 }
+
+func (h *deviceHandler) DeleteDevice(c *gin.Context) {
+	device_id := c.Param("id")
+	fmt.Println(device_id)
+	err := h.deviceService.DeleteDevice(device_id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/daftar-perangkat")
+}

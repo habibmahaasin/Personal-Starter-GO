@@ -3,6 +3,7 @@
     <div class="main-container pb-4">
       <div class="row first-summary">
 
+        <!-- map location -->
         <div class="col-12 col-lg-5">
           <div class="card p-lg-4 p-2" style="width: 100%">
             <div class="card-body p-0">
@@ -10,7 +11,9 @@
             </div>
           </div>
         </div>
+        <!-- end map location -->
 
+        <!-- card detail 1 -->
         <div class="col-12 col-lg-3">
           <div class="card" style="width: 100%">
             <div class="card-body">
@@ -37,7 +40,9 @@
             </div>
           </div>
         </div>
+        <!-- end card detail 1 -->
 
+        <!-- card detail 2 -->
         <div class="col-12 col-lg-4">
             <div class="card" style="width: 100%">
               <div class="card-body">
@@ -63,8 +68,7 @@
                       </div>
                       <div class="switcher">
                         <label for="toggle-otomatis-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Mode_id `1`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/2/{{ .deviceInfo.Status_id }}')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/1/{{ .deviceInfo.Status_id }}')" {{ end }}>
-                          <input type="checkbox" 
-                            {{ if eq .deviceInfo.Mode_id `1` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
+                          <input type="checkbox" {{ if eq .deviceInfo.Mode_id `1` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
                         </label>
                       </div>
                     </div>
@@ -79,8 +83,7 @@
                       </div>
                       <div class="switcher {{ if eq .deviceInfo.Mode_id `1` }} disabled-switcher {{ else }} {{ end }}">
                         <label for="toggle-manual-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Status_id `11`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/10')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/11')" {{ end }}>
-                          <input type="checkbox" 
-                            {{ if eq .deviceInfo.Status_id `11` }} Checked {{ else }} {{ end }} id="toggle-manual-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
+                          <input type="checkbox" {{ if eq .deviceInfo.Status_id `11` }} Checked {{ else }} {{ end }} id="toggle-manual-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
                         </label>
                       </div>
                     </div>
@@ -88,7 +91,9 @@
               </div>
             </div>
         </div>
-
+        <!-- end card detail 2 -->
+        
+        <!-- grafik sensor device -->
         <div class="col-12">
           <div class="card p-lg-4 p-2" style="width: 100%; height: 480px;">
             <div class="card-body p-0">
@@ -97,7 +102,9 @@
             </div>
           </div>
         </div>
+        <!-- end grafik sensor device -->
 
+        <!-- tabel Log History -->
         <div class="col-12">
           <div class="card p-lg-4 p-2" style="width: 100%; height: 100%;">
             <div class="card-body p-0">
@@ -132,10 +139,16 @@
             </div>
           </div>
         </div>
-
+        <!-- End Tabel log History -->
+        <div class="d-flex justify-content-end delete-device">
+          <button onclick="DeleteDevice('{{ .deviceInfo.Device_id }}')" class="btn btn-danger rounded-4 p-2 mt-4">Hapus Perangkat</button>
+        </div>
       </div>
     </div>
 </div>
+<style>
+  
+</style>
 <!-- Map Configuration -->
 <script>
     var latitudeDevice = JSON.parse('{{ .latitude }}');

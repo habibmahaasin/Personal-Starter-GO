@@ -76,3 +76,7 @@ func (s *service) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, str
 	conv, _ := s.json.Marshal(history)
 	return history, string(conv), nil
 }
+
+func (s *service) DeleteDevice(device_id string) error {
+	return s.repository.DeleteDevice(device_id)
+}

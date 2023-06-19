@@ -53,6 +53,23 @@ function ControllingFromDetail(condition) {
   });
 }
 
+function DeleteDevice(id_perangkat) {
+  Swal.fire({
+    title:
+      '<span style="font-size: 16px;font-weight: 400;">Apakah Kamu Yakin Ingin Menghapus Perangkat?</span>',
+    showDenyButton: true,
+    confirmButtonText: "Ya",
+    confirmButtonColor: "#282689",
+    denyButtonText: `Tidak`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location = "/hapus-perangkat/" + id_perangkat;
+    } else if (result.isDenied) {
+      window.location = "/detail-perangkat/" + id_perangkat;
+    }
+  });
+}
+
 $(document).ready(function () {
   $("#guppytech-table.report-page").DataTable({
     order: [[0, "desc"]],

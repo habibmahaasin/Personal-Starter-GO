@@ -16,8 +16,14 @@ func (h *deviceView) Index(c *gin.Context) {
 	var counter int
 	var average_temperature float64
 	var Last_updated_history string
-	ListDevice, _ := h.deviceService.GetAllDevices()
-	History, GraphHistory, _ := h.deviceService.GetDeviceHistory()
+
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+	user_id := session.Get("user_id")
+
+	ListDevice, _ := h.deviceService.GetAllDevices(user_id.(string))
+	History, GraphHistory, _ := h.deviceService.GetDeviceHistory(user_id.(string))
 
 	// count total devices
 	for i := 0; i < len(ListDevice); i++ {
@@ -43,10 +49,6 @@ func (h *deviceView) Index(c *gin.Context) {
 	average_ph = average_ph / float64(counter)
 	average_temperature = average_temperature / float64(counter)
 
-	session := sessions.Default(c)
-	user_email := session.Get("email")
-	full_name := session.Get("full_name")
-
 	convJsonHistory, _ := json.Marshal(GraphHistory)
 	var JSONHistory interface{}
 	json.Unmarshal(convJsonHistory, &JSONHistory)
@@ -70,8 +72,9 @@ func (h *deviceView) ListDevice(c *gin.Context) {
 	session := sessions.Default(c)
 	user_email := session.Get("email")
 	full_name := session.Get("full_name")
+	user_id := session.Get("user_id")
 
-	ListDevice, _ := h.deviceService.GetAllDevices()
+	ListDevice, _ := h.deviceService.GetAllDevices(user_id.(string))
 
 	c.HTML(http.StatusOK, "list_device.html", gin.H{
 		"title":      "Daftar Perangkat",
@@ -85,7 +88,9 @@ func (h *deviceView) Report(c *gin.Context) {
 	session := sessions.Default(c)
 	user_email := session.Get("email")
 	full_name := session.Get("full_name")
-	History, _, _ := h.deviceService.GetDeviceHistory()
+	user_id := session.Get("user_id")
+
+	History, _, _ := h.deviceService.GetDeviceHistory(user_id.(string))
 
 	c.HTML(http.StatusOK, "report.html", gin.H{
 		"title":     "Laporan",
@@ -116,8 +121,16 @@ func (h *deviceView) DetailDevice(c *gin.Context) {
 	full_name := session.Get("full_name")
 	u_id := session.Get("user_id")
 
-	DetailDevice, _ := h.deviceService.GetDeviceById(u_id.(string), d_id)
-	History, GraphHistory, _ := h.deviceService.GetDeviceHistoryById(d_id)
+	DetailDevice, err := h.deviceService.GetDeviceById(u_id.(string), d_id)
+	History, GraphHistory, _ := h.deviceService.GetDeviceHistoryById(d_id, u_id.(string))
+
+	// checking access
+	if err != nil || DetailDevice.Device_id == "" {
+		c.HTML(404, "error_404.html", gin.H{
+			"title": "Page Not Found",
+		})
+		return
+	}
 
 	var latest_ph_value float32
 	var latest_temperature_value float32
@@ -132,6 +145,7 @@ func (h *deviceView) DetailDevice(c *gin.Context) {
 		}
 	}
 
+	// convert graph history to json
 	convJsonHistory, _ := json.Marshal(GraphHistory)
 	var JSONHistory interface{}
 	json.Unmarshal(convJsonHistory, &JSONHistory)

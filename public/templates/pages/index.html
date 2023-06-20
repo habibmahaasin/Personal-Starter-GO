@@ -90,6 +90,7 @@
               </div>
               <div>
                 <div id="myChart"></div>
+                <h5 id="status_chart" style="margin-top: 0px !important; margin-bottom: 50px;"></h5>
               </div>
             </div>
           </div>
@@ -133,6 +134,10 @@
 
 <script>
   var history_data = JSON.parse('{{ .History }}');
+  if (history_data == null) {
+    document.getElementById("status_chart").innerHTML = "Tidak ada data yang tersedia";
+    $("#myChart").css("display", "none");
+  }
 
   var temperature = [];
   var ph = [];

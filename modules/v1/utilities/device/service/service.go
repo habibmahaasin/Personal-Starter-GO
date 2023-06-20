@@ -28,8 +28,8 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 	return data, err
 }
 
-func (s *service) GetAllDevices() ([]models.Device, error) {
-	device, _ := s.repository.GetAllDevices()
+func (s *service) GetAllDevices(user_id string) ([]models.Device, error) {
+	device, _ := s.repository.GetAllDevices(user_id)
 	for i, d := range device {
 		dd := &device[i]
 		dd.Date_updated_formatter = d.Date_updated.Format(time.ANSIC)
@@ -38,8 +38,8 @@ func (s *service) GetAllDevices() ([]models.Device, error) {
 	return device, nil
 }
 
-func (s *service) GetDeviceHistory() ([]models.DeviceHistory, string, error) {
-	history, _ := s.repository.GetDeviceHistory()
+func (s *service) GetDeviceHistory(user_id string) ([]models.DeviceHistory, string, error) {
+	history, _ := s.repository.GetDeviceHistory(user_id)
 	for i, d := range history {
 		dd := &history[i]
 		dd.History_date_formatter = d.History_date.Format(time.ANSIC)
@@ -67,20 +67,20 @@ func (s *service) AddDevice(input models.DeviceInput, user_id string) error {
 }
 
 func (s *service) GetDeviceById(u_id string, d_id string) (models.Device, error) {
-	DetailDevice, _ := s.repository.GetDeviceById(u_id, d_id)
+	DetailDevice, err := s.repository.GetDeviceById(u_id, d_id)
 	DetailDevice.Date_updated_formatter = DetailDevice.Date_updated.Format(time.ANSIC)
-	return DetailDevice, nil
+	return DetailDevice, err
 }
 
-func (s *service) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, string, error) {
-	history, _ := s.repository.GetDeviceHistoryById(d_id)
+func (s *service) GetDeviceHistoryById(d_id string, u_id string) ([]models.DeviceHistory, string, error) {
+	history, err := s.repository.GetDeviceHistoryById(d_id, u_id)
 	for i, d := range history {
 		dd := &history[i]
 		dd.History_date_formatter = d.History_date.Format(time.ANSIC)
 	}
 
 	conv, _ := s.json.Marshal(history)
-	return history, string(conv), nil
+	return history, string(conv), err
 }
 
 func (s *service) DeleteDevice(device_id string) error {

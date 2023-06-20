@@ -21,7 +21,7 @@
                 <tr style="height: 50px; vertical-align: middle;">
                     <td>{{ .Device_name }}</td>
                     <td>{{ .Mode_name }}</td>
-                    <td>{{ .Date_updated }}</td>
+                    <td>{{ .Date_updated_formatter }}</td>
                     <td>
                         <div class="switcher">
                             <label for="toggle-otomatis-{{ .Device_id }}" {{ if eq .Mode_name `Otomatis`}} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/2/{{ .Status_id }}')" {{ else }} onclick="ControllingFromList('daftar_perangkat/{{ .Device_id }}/{{ .Antares_id }}/1/{{ .Status_id }}')" {{ end }}>

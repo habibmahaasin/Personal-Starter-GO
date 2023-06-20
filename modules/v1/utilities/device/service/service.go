@@ -29,7 +29,13 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 }
 
 func (s *service) GetAllDevices() ([]models.Device, error) {
-	return s.repository.GetAllDevices()
+	device, _ := s.repository.GetAllDevices()
+	for i, d := range device {
+		dd := &device[i]
+		dd.Date_updated_formatter = d.Date_updated.Format(time.ANSIC)
+	}
+
+	return device, nil
 }
 
 func (s *service) GetDeviceHistory() ([]models.DeviceHistory, string, error) {

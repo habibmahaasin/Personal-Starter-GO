@@ -99,6 +99,7 @@
             <div class="card-body p-0">
               <h5 class="card-title graph-card p-lg-4 pt-lg-2">Grafik Sensor {{ .deviceInfo.Device_name }}</h5>
                 <div id="chartByid" style="width: 100%;"></div>
+                <h5 id="status_chart"></h5>
             </div>
           </div>
         </div>
@@ -146,9 +147,7 @@
       </div>
     </div>
 </div>
-<style>
-  
-</style>
+
 <!-- Map Configuration -->
 <script>
     var latitudeDevice = JSON.parse('{{ .latitude }}');
@@ -168,6 +167,12 @@
 <!-- Graph Configuration -->
 <script>
   var history_data = JSON.parse('{{ .graphHistory }}');
+  
+  if (history_data == null) {
+    document.getElementById("status_chart").innerHTML = "Tidak ada data yang tersedia";
+    $("#chartByid").css("display", "none");
+  }
+
   var temperature = [];
   var ph = [];
   var dissolved_oxygen = [];

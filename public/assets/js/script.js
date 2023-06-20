@@ -81,7 +81,7 @@ $(document).ready(function () {
     ],
     pagingType: "full",
     language: {
-      emptyTable: "Data Pengguna kosong",
+      emptyTable: "Tidak ada data yang tersedia",
       zeroRecords: "Data tidak ditemukan",
       lengthMenu: "Baris per halaman _MENU_ ",
       info: " _START_ - _END_ dari _TOTAL_ ",
@@ -98,7 +98,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $("#guppytech-table.list-device").DataTable({
-    order: [[0, "asc"]],
+    order: [[2, "desc"]],
     scrollX: true,
     pageLength: 5,
     lengthMenu: [
@@ -107,7 +107,7 @@ $(document).ready(function () {
     ],
     pagingType: "full",
     language: {
-      emptyTable: "Data Pengguna kosong",
+      emptyTable: "Tidak ada data yang tersedia",
       zeroRecords: "Data tidak ditemukan",
       lengthMenu: "Baris per halaman _MENU_ ",
       info: " _START_ - _END_ dari _TOTAL_ ",

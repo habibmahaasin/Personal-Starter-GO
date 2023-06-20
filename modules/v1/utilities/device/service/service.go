@@ -80,3 +80,7 @@ func (s *service) GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, str
 func (s *service) DeleteDevice(device_id string) error {
 	return s.repository.DeleteDevice(device_id)
 }
+
+func (s *service) GetDeviceBrands() ([]models.Device, error) {
+	return s.repository.GetDeviceBrands()
+}

@@ -231,6 +231,15 @@ svg {
   width: 200px;
   padding: 10px 20px !important;
 }
+.form-device .form-control{
+  font-size: 14px;
+}
+.leaflet-popup.leaflet-zoom-animated{
+  bottom: 35px !important;
+}
+.manual-loc-form{
+  display: none;
+}
 @media screen and (max-width: 768px) {
   #guppytech-table_filter label input {
     width: calc(100vw - 200px);

@@ -6,21 +6,21 @@
     <form class="form-device" id="deivce-settings" method="POST" action="/tambah-perangkat">
         <div class="mb-3">
           <label for="device_name" class="form-label">Nama Perangkat</label>
-          <input type="text" class="form-control" id="device_name" name="device_name" placeholder="Masukkan Nama Perangkat" required>
+          <input type="text" class="form-control" id="device_name" name="device_name" placeholder="Masukkan Nama Perangkat" value="{{ .selectedDevice.Device_name }}" required>
         </div>
         <div class="mb-3">
             <label for="antares_id" class="form-label">Antares ID</label>
-            <input type="text" class="form-control" id="antares_id" name="antares_id" placeholder="Masukkan Antares Id Perangkat" required>
+            <input type="text" class="form-control" id="antares_id" name="antares_id" placeholder="Masukkan Antares Id Perangkat" value="{{ .selectedDevice.Antares_id }}" required>
         </div>
         <div class="mb-3">
             <label for="device_location" class="form-label">Lokasi Perangkat</label>
-            <textarea type="textarea" class="form-control" id="device_location" name="device_location" placeholder="Masukkan Detail Lokasi Device" required></textarea>
+            <textarea type="textarea" class="form-control" id="device_location" name="device_location" placeholder="Masukkan Detail Lokasi Device" value="{{ .selectedDevice.Device_location }}" required>{{ .selectedDevice.Device_location }}</textarea>
         </div>
         <div class="mb-3">
             <label for="koor_loc" class="form-label">Koordinat Lokasi</label>
             <select class="form-select form-control" aria-label="Default select example" id="koor_loc" name="koor_loc" required>
-                <option disabled selected>Pilih Metode</option>
-                <option value="input-loc-manual">Input Manual</option>
+                <option disabled>Pilih Metode</option>
+                <option value="input-loc-manual" selected>Input Manual</option>
                 <option value="curr-loc">Lokasi Terkini</option>
                 <option value="pin-from-maps">Pin Maps</option>
             </select>
@@ -29,31 +29,35 @@
         <div class="manual-loc-form">
             <div class="mb-3">
                 <label for="latitude" class="form-label">Latitude</label>
-                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Masukkan Latitude" required>
+                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Masukkan Latitude" value="{{ .selectedDevice.Latitude }}" required>
             </div>
             <div class="mb-3">
                 <label for="longitude" class="form-label">Longitude</label>
-                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Masukkan longitude" required>
+                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Masukkan longitude" value="{{ .selectedDevice.Longitude }}" required>
             </div>
         </div>
         <div class="mb-3">
             <label for="brand" class="form-label">Aerator Brand</label>
             <select class="form-select form-control" aria-label="Default select example" id="brand" name="brand" required>
-                <option disabled selected>Pilih Merek Perangkat</option>
-                {{ range .brands }}
-                <option value="{{ .Brand_id }}">{{ .Brand_name }}</option>
+                {{ $selectedBrand := .selectedDevice.Brand_id }}
+                {{ range $brands := .brands }}
+                <option value="{{ $brands.Brand_id }}" {{ if (eq $selectedBrand $brands.Brand_id) }} selected {{ end }}>{{ $brands.Brand_name }}</option>
                 {{ end }}
             </select>
         </div>
         <div class="mb-3">
             <label for="mode_id" class="form-label">Model Awal</label>
             <select class="form-select form-control" aria-label="Default select example" id="mode_id" name="mode_id" required>
-                <option disabled selected>Pilih Mode</option>
-                <option value="1">Manual</option>
-                <option value="2">Otomatis</option>
+                <option value="2" {{ if eq .selectedDevice.Mode_id "2" }} selected {{ end }}>Manual</option>
+                <option value="1" {{ if eq .selectedDevice.Mode_id "1" }} selected {{ end }}>Otomatis</option>
             </select>
         </div>
         <button type="submit" class="btn btn-guppytech w-50 mt-3">Tambah</button>
     </form>
 </div>
+<style>
+    .manual-loc-form{
+        display: block;
+    }
+</style>
 {{ end }}

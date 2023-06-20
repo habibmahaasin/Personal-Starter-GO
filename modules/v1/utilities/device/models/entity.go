@@ -25,7 +25,8 @@ type Device struct {
 	Status_name            string
 	Mode_id                string
 	Mode_name              string
-	Brand                  string
+	Brand_id               int
+	Brand_name             string
 	User_id                string
 	Latitude               string
 	Longitude              string

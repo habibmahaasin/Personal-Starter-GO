@@ -99,11 +99,13 @@ func (h *deviceView) AddDevice(c *gin.Context) {
 	session := sessions.Default(c)
 	user_email := session.Get("email")
 	full_name := session.Get("full_name")
+	brandList, _ := h.deviceService.GetDeviceBrands()
 
 	c.HTML(http.StatusOK, "add_device.html", gin.H{
 		"title":     "Tambah Perangkat",
 		"email":     user_email,
 		"full_name": full_name,
+		"brands":    brandList,
 	})
 }
 
@@ -146,5 +148,24 @@ func (h *deviceView) DetailDevice(c *gin.Context) {
 		"latest_temp":  latest_temperature_value,
 		"latest_do":    latest_dissolved_oxygen_value,
 		"history":      History,
+	})
+}
+
+func (h *deviceView) EditDevice(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+	u_id := session.Get("user_id")
+	d_id := c.Param("id")
+
+	brandList, _ := h.deviceService.GetDeviceBrands()
+	DetailDevice, _ := h.deviceService.GetDeviceById(u_id.(string), d_id)
+
+	c.HTML(http.StatusOK, "edit_device.html", gin.H{
+		"title":          "Ubah Perangkat",
+		"email":          user_email,
+		"full_name":      full_name,
+		"selectedDevice": DetailDevice,
+		"brands":         brandList,
 	})
 }

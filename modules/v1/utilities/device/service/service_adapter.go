@@ -16,6 +16,7 @@ type Service interface {
 	GetDeviceById(u_id string, d_id string) (models.Device, error)
 	GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, string, error)
 	DeleteDevice(device_id string) error
+	GetDeviceBrands() ([]models.Device, error)
 }
 
 type service struct {

@@ -84,3 +84,7 @@ func (s *service) DeleteDevice(device_id string) error {
 func (s *service) GetDeviceBrands() ([]models.Device, error) {
 	return s.repository.GetDeviceBrands()
 }
+
+func (s *service) UpdateDeviceById(up_input models.DeviceInput, device_id string) error {
+	return s.repository.UpdateDeviceById(up_input, device_id)
+}

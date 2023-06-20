@@ -81,3 +81,18 @@ func (h *deviceHandler) DeleteDevice(c *gin.Context) {
 	}
 	c.Redirect(http.StatusFound, "/daftar-perangkat")
 }
+
+func (h *deviceHandler) EditDevice(c *gin.Context) {
+	device_id := c.Param("id")
+	var input models.DeviceInput
+
+	err := c.ShouldBind(&input)
+
+	err = h.deviceService.UpdateDeviceById(input, device_id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/daftar-perangkat")
+}

@@ -99,3 +99,8 @@ func (r *repository) GetDeviceBrands() ([]models.Device, error) {
 	err := r.db.Raw("select * from brand").Scan(&brand).Error
 	return brand, err
 }
+
+func (r *repository) UpdateDeviceById(up_input models.DeviceInput, device_id string) error {
+	err := r.db.Exec("update devices set device_name = ?, antares_id = ?, device_location = ?, latitude = ?, longitude = ?, brand_id = ?, mode_id = ?, date_updated = now() where device_id = ?", up_input.Device_name, up_input.Antares_id, up_input.Device_location, up_input.Latitude, up_input.Longitude, up_input.Brand_id, up_input.Mode_id, device_id).Error
+	return err
+}

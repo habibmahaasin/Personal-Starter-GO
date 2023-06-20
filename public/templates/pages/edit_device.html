@@ -3,7 +3,7 @@
     <div class="header-container-large d-flex justify-content-between">
       <h1 class="page-title">{{ .title }}</h1>
     </div>
-    <form class="form-device" id="deivce-settings" method="POST" action="/tambah-perangkat">
+    <form class="form-device" id="deivce-settings" method="POST" action="/ubah-perangkat/{{ .selectedDevice.Device_id }}">
         <div class="mb-3">
           <label for="device_name" class="form-label">Nama Perangkat</label>
           <input type="text" class="form-control" id="device_name" name="device_name" placeholder="Masukkan Nama Perangkat" value="{{ .selectedDevice.Device_name }}" required>
@@ -52,9 +52,10 @@
                 <option value="1" {{ if eq .selectedDevice.Mode_id "1" }} selected {{ end }}>Otomatis</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-guppytech w-50 mt-3">Tambah</button>
+        <button type="submit" class="btn btn-guppytech w-50 mt-3">Update</button>
     </form>
 </div>
+<br><br>
 <style>
     .manual-loc-form{
         display: block;

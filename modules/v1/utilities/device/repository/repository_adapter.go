@@ -19,6 +19,7 @@ type Repository interface {
 	GetDeviceHistoryById(d_id string) ([]models.DeviceHistory, error)
 	DeleteDevice(device_id string) error
 	GetDeviceBrands() ([]models.Device, error)
+	UpdateDeviceById(up_input models.DeviceInput, device_id string) error
 }
 
 type repository struct {

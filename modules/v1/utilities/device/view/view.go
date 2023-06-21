@@ -47,7 +47,13 @@ func (h *deviceView) Index(c *gin.Context) {
 		}
 	}
 	average_ph = average_ph / float64(counter)
+	if math.IsNaN(average_ph) {
+		average_ph = 0
+	}
 	average_temperature = average_temperature / float64(counter)
+	if math.IsNaN(average_temperature) {
+		average_temperature = 0
+	}
 
 	convJsonHistory, _ := json.Marshal(GraphHistory)
 	var JSONHistory interface{}

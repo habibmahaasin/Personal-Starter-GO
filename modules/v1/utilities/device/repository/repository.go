@@ -31,7 +31,7 @@ func (r *repository) GetDeviceByAntares(antaresDeviceID string) (models.Device, 
 
 func (r *repository) GetDeviceHistory(user_id string) ([]models.DeviceHistory, error) {
 	var DeviceHistory []models.DeviceHistory
-	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id ORDER BY dh.history_id where d.user_id = ? DESC LIMIT 250", user_id).Scan(&DeviceHistory).Error
+	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.user_id = ? ORDER BY dh.history_id DESC LIMIT 250", user_id).Scan(&DeviceHistory).Error
 	return DeviceHistory, err
 }
 

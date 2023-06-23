@@ -1,0 +1,10 @@
+
+### mocking step :
+1. install mockgen
+2. export PATH=$PATH:/Users/{user}/go/bin (mac os)
+3. mockgen . {interface name}  >> mock/{directory}.go 
+
+### cek coverage testing
+1. go to directory
+2. go test -v -coverprofile cover.out
+3. go tool cover -html cover.out

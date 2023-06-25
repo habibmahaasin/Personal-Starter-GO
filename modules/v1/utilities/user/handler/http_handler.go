@@ -30,7 +30,7 @@ func (n *userHandler) Login(c *gin.Context) {
 	}
 
 	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
-	c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
+	c.SetCookie("Token", token, 21600, "/", "guppy.tech", false, true)
 
 	session.Set("email", user.Email)
 	session.Set("full_name", user.Full_name)

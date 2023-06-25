@@ -10,6 +10,5 @@ func (h *userView) Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title":   "Login",
 		"message": "",
-		"expired": "",
 	})
 }

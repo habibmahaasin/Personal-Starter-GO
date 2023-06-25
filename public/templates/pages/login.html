@@ -1,17 +1,5 @@
 {{ define "content" }}
 <div class="login-container">
-    {{ if eq .expired "Yes"}}
-    <div class="alert-timeout">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Session Expired!</h5>
-              <p class="card-text">Sesi anda telah habis, silahkan login kembali.</p>
-              <button id="refresh-login" class="btn btn-guppytech w-100 mt-3">Ok</button>
-            </div>
-        </div>
-    </div>
-    {{ else }}
-    {{ end }}
     <div class="row justify-content-around">
         <div class="col-4 banner-login">
         </div>

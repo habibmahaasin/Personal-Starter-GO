@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"GuppyTech/app/config"
 	"GuppyTech/modules/v1/utilities/user/models"
 	"log"
 	"net/http"
@@ -11,7 +10,6 @@ import (
 )
 
 func (n *userHandler) Login(c *gin.Context) {
-	conf, _ := config.Init()
 	session := sessions.Default(c)
 	var input models.LoginInput
 
@@ -32,17 +30,13 @@ func (n *userHandler) Login(c *gin.Context) {
 	}
 
 	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
-	if conf.App.Mode == "debug" {
-		c.SetCookie("Token", token, 21600, "/", "rrr", false, true)
-	} else if conf.App.Mode == "release" {
-		c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
-	}
+	c.SetCookie("Token", token, 21600, "/", "guppy.tech", false, true)
 
 	session.Set("email", user.Email)
 	session.Set("full_name", user.Full_name)
 	session.Set("user_id", user.User_id)
 	session.Options(sessions.Options{
-		MaxAge: 21600,
+		MaxAge: 90,
 	})
 	session.Save()
 

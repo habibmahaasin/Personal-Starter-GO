@@ -12,7 +12,11 @@ func IsLogin() gin.HandlerFunc {
 		session := sessions.Default(c)
 		userIDSess := session.Get("user_id")
 		if userIDSess == nil {
-			c.Redirect(http.StatusFound, "/login")
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"title":   "Login",
+				"message": "",
+				"expired": "Yes",
+			})
 			return
 		}
 	}

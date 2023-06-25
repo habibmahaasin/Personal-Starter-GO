@@ -1,3 +1,7 @@
+$('#refresh-login').click(function(){
+  window.location.href = '/login';
+})
+
 window.onscroll = () => {
   if ($(window).width() > 768) {
     if (window.scrollY > 40) {

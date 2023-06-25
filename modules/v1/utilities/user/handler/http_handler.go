@@ -27,22 +27,23 @@ func (n *userHandler) Login(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"title":   "Login",
 			"message": "Username/ Password yang anda masukkan Salah!",
+			"expired": "",
 		})
 		return
 	}
 
 	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
 	if conf.App.Mode == "debug" {
-		c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
+		c.SetCookie("Token", token, 90, "/", "localhost", false, true)
 	} else {
-		c.SetCookie("Token", token, 21600, "/", "guppy.tech", false, true)
+		c.SetCookie("Token", token, 90, "/", "guppy.tech", false, true)
 	}
 
 	session.Set("email", user.Email)
 	session.Set("full_name", user.Full_name)
 	session.Set("user_id", user.User_id)
 	session.Options(sessions.Options{
-		MaxAge: 21600,
+		MaxAge: 90,
 	})
 	session.Save()
 

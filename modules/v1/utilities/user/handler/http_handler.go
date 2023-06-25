@@ -33,9 +33,9 @@ func (n *userHandler) Login(c *gin.Context) {
 
 	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
 	if conf.App.Mode == "debug" {
+		c.SetCookie("Token", token, 21600, "/", "rrr", false, true)
+	} else if conf.App.Mode == "release" {
 		c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
-	} else {
-		c.SetCookie("Token", token, 21600, "/", "guppy.tech", false, true)
 	}
 
 	session.Set("email", user.Email)

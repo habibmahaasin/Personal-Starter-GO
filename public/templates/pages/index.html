@@ -107,19 +107,21 @@
                 <table id="guppytech-table" class="table table-striped list-device" style="width:100%">
                     <thead>
                         <tr style="height: 50px; vertical-align: middle;">
-                            <th>Nama Perangkat</th>
-                            <th>Data diperbarui</th>
-                            <th>Status Kontrol</th>
-                            <th>Status Device</th>
+                          <th hidden></th>
+                          <th>Nama Perangkat</th>
+                          <th>Data diperbarui</th>
+                          <th>Status Kontrol</th>
+                          <th>Status Device</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{ range .listDevice }}
                         <tr style="height: 50px; vertical-align: middle;">
-                            <td>{{ .Device_name }}</td>
-                            <td>{{ .Date_updated }}</td>
-                            <td>{{ .Mode_name }}</td>
-                            <td>{{ .Status_name }}</td>
+                          <td hidden></td>
+                          <td>{{ .Device_name }}</td>
+                          <td>{{ .Date_updated_formatter }}</td>
+                          <td>{{ .Mode_name }}</td>
+                          <td>{{ .Status_name }}</td>
                         </tr>
                         {{ end }}
                     </tbody>

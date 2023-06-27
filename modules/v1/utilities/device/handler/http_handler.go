@@ -44,7 +44,7 @@ func (h *deviceHandler) Control(c *gin.Context) {
 		return
 	}
 	for i := 0; i < 2; i++ {
-		h.deviceService.PostControlAntares(antares_id, token, power, mode)
+		err = h.deviceService.PostControlAntares(antares_id, token, power, mode)
 		time.Sleep(2 * time.Second)
 	}
 
@@ -73,7 +73,6 @@ func (h *deviceHandler) AddDevice(c *gin.Context) {
 
 func (h *deviceHandler) DeleteDevice(c *gin.Context) {
 	device_id := c.Param("id")
-	fmt.Println(device_id)
 	err := h.deviceService.DeleteDevice(device_id)
 	if err != nil {
 		log.Println(err)

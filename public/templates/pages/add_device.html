@@ -38,7 +38,7 @@
         </div>
         <div class="mb-3">
             <label for="brand" class="form-label">Aerator Brand</label>
-            <select class="form-select form-control" aria-label="Default select example" id="brand" name="brand" required>
+            <select class="form-select form-control" aria-label="Default select example" id="brand_id" name="brand_id" required>
                 <option disabled selected>Pilih Merek Perangkat</option>
                 {{ range .brands }}
                 <option value="{{ .Brand_id }}">{{ .Brand_name }}</option>

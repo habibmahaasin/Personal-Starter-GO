@@ -71,6 +71,6 @@ type DeviceInput struct {
 	Device_location string `json:"device_location" form:"device_location" binding:"required"`
 	Latitude        string `json:"latitude" form:"latitude" binding:"required"`
 	Longitude       string `json:"longitude" form:"longitude" binding:"required"`
-	Brand_id        string `json:"brand_id" form:"brand" binding:"required"`
+	Brand_id        string `json:"brand_id" form:"brand_id" binding:"required"`
 	Mode_id         string `json:"mode_id" form:"mode_id" binding:"required"`
 }

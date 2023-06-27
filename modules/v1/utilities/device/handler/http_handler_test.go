@@ -2,25 +2,41 @@ package handler
 
 import (
 	"GuppyTech/app/config"
+	"GuppyTech/modules/v1/utilities/device/models"
 	"GuppyTech/modules/v1/utilities/device/repository"
 	"GuppyTech/modules/v1/utilities/device/service"
 	myJSON "GuppyTech/pkg/json"
 	"bytes"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	m_deviceService "GuppyTech/modules/v1/utilities/device/service/mock"
 )
+
+func TestInit(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	os.Chdir("../../../../../")
+}
 
 func SetUpRouter() *gin.Engine {
 	app := gin.Default()
+	cookieStore := cookie.NewStore([]byte("GuPPy_T3ch_5mart_A3raT0rs"))
+	app.Use(sessions.Sessions("GuppyTech", cookieStore))
+
 	return app
 }
 
@@ -116,58 +132,359 @@ func Test_SubscribeWebhook(t *testing.T) {
 }
 
 func Test_Control(t *testing.T) {
-	cookie := "message=; GuppyTech=MTY4NjE1MDIwNHxEdi1CQkFFQ180SUFBUkFCRUFBQWNmLUNBQUlHYzNSeWFXNW5EQWdBQm5WelpYSkpSQVp6ZEhKcGJtY01KZ0FrWVRrMk1qTXlNV010Tm1JellTMDBZamt5TFRoaE56QXRPVGN5T1dFeFpqRTFZamMxQm5OMGNtbHVad3dLQUFoMWMyVnlUbUZ0WlFaemRISnBibWNNRVFBUFIzVndjSGxVWldOb0lFRmtiV2x1fHVmHYqw7_906PoNHN; token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODYxNTExMDQsImZ1bGxfbmFtZSI6Ikd1cHB5VGVjaCBBZG1pbiIsInJvbGVfaWQiOjEsInVzZXJfaWQiOiJhOTYyMzIxYy02YjNhLTRiOTItOGE3MC05NzI5YTFmMTViNzUifQ.yA7MmYzBUjmXRb0m2ftK-WwlQ7CQbNMahok7fZF3TPA"
-	basic := "Basic YWRtaW46YWRtaW4="
+	ctrler := gomock.NewController(t)
+	defer ctrler.Finish()
+
+	id := "e5d415f7-a96b-4dc2-84b8-64a1830b4c01"
+	antares_id := "ps9t5UiX15TVLxYB"
+	antares_token := "862b34fe2de548cc:cdf66d91b12db8d2"
 
 	tests := []struct {
 		name       string
-		id         string
 		mode       string
-		antares_id string
 		power      string
-		token      string
+		page       string
 		statusCode int
+		beforeTest func(deviceService *m_deviceService.MockService)
 	}{
 		{
-			name:       "Test Controlling Berhasil",
-			id:         "e5d415f7-a96b-4dc2-84b8-64a1830b4c01",
+			name:       "Test Controlling Berhasil Dari Daftar Perangkat",
 			mode:       "2",
-			antares_id: "ps9t5UiX15TVLxYB",
 			power:      "10",
-			token:      "862b34fe2de548cc:cdf66d91b12db8d2",
+			page:       "daftar_perangkat",
 			statusCode: 302,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().Control(id, "10", "2").Return(nil)
+				for i := 0; i < 2; i++ {
+					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "10", "2").Return(nil)
+				}
+			},
+		},
+		{
+			name:       "Test Controlling Berhasil Dari Detail Perangkat",
+			mode:       "1",
+			power:      "11",
+			page:       "detail_perangkat",
+			statusCode: 302,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().Control(id, "11", "1").Return(nil)
+				for i := 0; i < 2; i++ {
+					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1").Return(nil)
+				}
+			},
 		},
 		{
 			name:       "Test Controlling Gagal",
-			id:         "2",
-			mode:       "100o",
-			antares_id: "ps9t5UiX15TVLxYB",
-			power:      "on",
-			token:      "862b34fe2de548cc:cdf66d91b12db8d2",
-			statusCode: 302,
+			mode:       "2000",
+			power:      "1000",
+			page:       "daftar_perangkat",
+			statusCode: 200,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().Control(id, "1000", "2000").Return(errors.New("Error"))
+			},
 		},
 	}
 
-	r := SetUpRouter()
-	r.GET("/control/:id/:antares/:mode/:power", SetupHandler().Control)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := http.NewRequest("GET", "/control/"+tt.id+"/"+tt.antares_id+"/"+tt.mode+"/"+tt.power, nil)
-			if err != nil {
-				fmt.Println(err)
-				return
+			deviceService := m_deviceService.NewMockService(ctrler)
+
+			deviceHandler := &deviceHandler{
+				deviceService: deviceService,
 			}
-			req.Header.Set("Authorization", basic)
-			req.Header.Set("Cookie", cookie)
+
+			if tt.beforeTest != nil {
+				tt.beforeTest(deviceService)
+			}
+
+			handler := deviceHandler.Control
+			router := SetUpRouter()
+
+			router.GET("/control/:page/:id/:antares/:mode/:power", handler)
+			req, err := http.NewRequest("GET", "/control/"+tt.page+"/"+id+"/"+antares_id+"/"+tt.mode+"/"+tt.power, nil)
+			assert.NoError(t, err)
+
 			resp := httptest.NewRecorder()
-			r.ServeHTTP(resp, req)
-			location, err := resp.Result().Location()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			router.ServeHTTP(resp, req)
+
 			assert.Equal(t, resp.Code, tt.statusCode)
-			assert.Equal(t, location.Path, "/daftar-perangkat")
+
 		})
 	}
+}
+
+func Test_AddDevice(t *testing.T) {
+	cookies := "GuppyTech=MTY4Nzg4OTQyOXxEdi1CQkFFQ180SUFBUkFCRUFBQV81N19nZ0FEQm5OMGNtbHVad3dKQUFkMWMyVnlYMmxrQm5OMGNtbHVad3dtQUNSaE9UWXlNekl4WXkwMllqTmhMVFJpT1RJdE9HRTNNQzA1TnpJNVlURm1NVFZpTnpVR2MzUnlhVzVuREFjQUJXVnRZV2xzQm5OMGNtbHVad3dTQUJCaFpHMXBia0JuZFhCd2VTNTBaV05vQm5OMGNtbHVad3dMQUFsbWRXeHNYMjVoYldVR2MzUnlhVzVuREJFQUQwZDFjSEI1VkdWamFDQkJaRzFwYmc9PXw-fMZDrPRUEhzbOESI0OFERF_CY7HCa7iBnNZfrmK-Yg=="
+	ctrler := gomock.NewController(t)
+	defer ctrler.Finish()
+
+	user_id := "a962321c-6b3a-4b92-8a70-9729a1f15b75"
+	add_device_form := models.DeviceInput{
+		Device_name:     "Device 1",
+		Antares_id:      "ps9t5UiX15TVLxYB",
+		Device_location: "Bandung",
+		Latitude:        "123",
+		Longitude:       "123",
+		Brand_id:        "1",
+		Mode_id:         "1",
+	}
+
+	tests := []struct {
+		name       string
+		payload    bool
+		statusCode int
+		beforeTest func(deviceService *m_deviceService.MockService)
+	}{
+		{
+			name:       "Test Add Device Berhasil",
+			payload:    true,
+			statusCode: 302,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().AddDevice(models.DeviceInput{
+					Device_name:     "Device 1",
+					Antares_id:      "ps9t5UiX15TVLxYB",
+					Device_location: "Bandung",
+					Latitude:        "123",
+					Longitude:       "123",
+					Brand_id:        "1",
+					Mode_id:         "1",
+				}, user_id).Return(nil)
+			},
+		},
+		{
+			name:       "Test Add Device Gagal",
+			payload:    false,
+			statusCode: 200,
+			beforeTest: func(deviceService *m_deviceService.MockService) {},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			deviceService := m_deviceService.NewMockService(ctrler)
+
+			deviceHandler := &deviceHandler{
+				deviceService: deviceService,
+			}
+
+			if tt.beforeTest != nil {
+				tt.beforeTest(deviceService)
+			}
+
+			router := SetUpRouter()
+			router.POST("/add-device", deviceHandler.AddDevice)
+
+			payload := &bytes.Buffer{}
+			writer := multipart.NewWriter(payload)
+			err := writer.WriteField("device_name", add_device_form.Device_name)
+			assert.NoError(t, err)
+			err = writer.WriteField("antares_id", add_device_form.Antares_id)
+			assert.NoError(t, err)
+			err = writer.WriteField("device_location", add_device_form.Device_location)
+			assert.NoError(t, err)
+			err = writer.WriteField("latitude", add_device_form.Latitude)
+			assert.NoError(t, err)
+			err = writer.WriteField("longitude", add_device_form.Longitude)
+			assert.NoError(t, err)
+			err = writer.WriteField("brand_id", add_device_form.Brand_id)
+			assert.NoError(t, err)
+			err = writer.WriteField("mode_id", add_device_form.Mode_id)
+			assert.NoError(t, err)
+
+			err = writer.Close()
+			assert.NoError(t, err)
+
+			if tt.payload {
+				req, err := http.NewRequest("POST", "/add-device", payload)
+				assert.NoError(t, err)
+
+				req.Header.Set("Content-Type", writer.FormDataContentType())
+				req.Header.Set("Cookie", cookies)
+
+				resp := httptest.NewRecorder()
+				router.ServeHTTP(resp, req)
+
+				assert.Equal(t, resp.Code, tt.statusCode)
+			} else {
+				req, err := http.NewRequest("POST", "/add-device", nil)
+				assert.NoError(t, err)
+
+				req.Header.Set("Content-Type", writer.FormDataContentType())
+
+				resp := httptest.NewRecorder()
+				router.ServeHTTP(resp, req)
+
+				assert.Equal(t, resp.Code, tt.statusCode)
+			}
+
+		})
+	}
+}
+
+func Test_DeleteDevice(t *testing.T) {
+	ctrler := gomock.NewController(t)
+	defer ctrler.Finish()
+
+	device_id := "e5d415f7-a96b-4dc2-84b8-64a1830b4c01"
+
+	tests := []struct {
+		name       string
+		statusCode int
+		beforeTest func(deviceService *m_deviceService.MockService)
+	}{
+		{
+			name:       "Test Delete Device Berhasil",
+			statusCode: 302,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().DeleteDevice(device_id).Return(nil)
+			},
+		},
+		{
+			name:       "Test Delete Device Gagal",
+			statusCode: 200,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().DeleteDevice(device_id).Return(errors.New("Error"))
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			deviceService := m_deviceService.NewMockService(ctrler)
+
+			deviceHandler := &deviceHandler{
+				deviceService: deviceService,
+			}
+
+			if tt.beforeTest != nil {
+				tt.beforeTest(deviceService)
+			}
+
+			router := SetUpRouter()
+
+			router.GET("/delete-device/:id", deviceHandler.DeleteDevice)
+			req, err := http.NewRequest("GET", "/delete-device/"+device_id, nil)
+			assert.NoError(t, err)
+
+			resp := httptest.NewRecorder()
+			router.ServeHTTP(resp, req)
+
+			assert.Equal(t, resp.Code, tt.statusCode)
+
+		})
+	}
+}
+
+func Test_EditDevice(t *testing.T) {
+	ctrler := gomock.NewController(t)
+	defer ctrler.Finish()
+
+	cookies := "GuppyTech=MTY4Nzg4OTQyOXxEdi1CQkFFQ180SUFBUkFCRUFBQV81N19nZ0FEQm5OMGNtbHVad3dKQUFkMWMyVnlYMmxrQm5OMGNtbHVad3dtQUNSaE9UWXlNekl4WXkwMllqTmhMVFJpT1RJdE9HRTNNQzA1TnpJNVlURm1NVFZpTnpVR2MzUnlhVzVuREFjQUJXVnRZV2xzQm5OMGNtbHVad3dTQUJCaFpHMXBia0JuZFhCd2VTNTBaV05vQm5OMGNtbHVad3dMQUFsbWRXeHNYMjVoYldVR2MzUnlhVzVuREJFQUQwZDFjSEI1VkdWamFDQkJaRzFwYmc9PXw-fMZDrPRUEhzbOESI0OFERF_CY7HCa7iBnNZfrmK-Yg=="
+	device_id := "e5d415f7-a96b-4dc2-84b8-64a1830b4c01"
+
+	edit_device_form := models.DeviceInput{
+		Device_name:     "Device 1",
+		Antares_id:      "ps9t5UiX15TVLxYB",
+		Device_location: "Bandung",
+		Latitude:        "123",
+		Longitude:       "123",
+		Brand_id:        "1",
+		Mode_id:         "1",
+	}
+
+	tests := []struct {
+		name       string
+		payload    bool
+		statusCode int
+		beforeTest func(deviceService *m_deviceService.MockService)
+	}{
+		{
+			name:       "Test Edit Device Berhasil",
+			payload:    true,
+			statusCode: 302,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().UpdateDeviceById(models.DeviceInput{
+					Device_name:     "Device 1",
+					Antares_id:      "ps9t5UiX15TVLxYB",
+					Device_location: "Bandung",
+					Latitude:        "123",
+					Longitude:       "123",
+					Brand_id:        "1",
+					Mode_id:         "1",
+				}, device_id).Return(nil)
+			},
+		},
+		{
+			name:       "Test Edit Device Berhasil",
+			payload:    false,
+			statusCode: 200,
+			beforeTest: func(deviceService *m_deviceService.MockService) {
+				deviceService.EXPECT().UpdateDeviceById(models.DeviceInput{}, device_id).Return(errors.New("Error"))
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			deviceService := m_deviceService.NewMockService(ctrler)
+
+			deviceHandler := &deviceHandler{
+				deviceService: deviceService,
+			}
+
+			if tt.beforeTest != nil {
+				tt.beforeTest(deviceService)
+			}
+
+			router := SetUpRouter()
+			router.POST("/edit-device/:id", deviceHandler.EditDevice)
+
+			payload := &bytes.Buffer{}
+			writer := multipart.NewWriter(payload)
+			err := writer.WriteField("device_name", edit_device_form.Device_name)
+			assert.NoError(t, err)
+			err = writer.WriteField("antares_id", edit_device_form.Antares_id)
+			assert.NoError(t, err)
+			err = writer.WriteField("device_location", edit_device_form.Device_location)
+			assert.NoError(t, err)
+			err = writer.WriteField("latitude", edit_device_form.Latitude)
+			assert.NoError(t, err)
+			err = writer.WriteField("longitude", edit_device_form.Longitude)
+			assert.NoError(t, err)
+			err = writer.WriteField("brand_id", edit_device_form.Brand_id)
+			assert.NoError(t, err)
+			err = writer.WriteField("mode_id", edit_device_form.Mode_id)
+			assert.NoError(t, err)
+
+			err = writer.Close()
+			assert.NoError(t, err)
+
+			if tt.payload {
+				req, err := http.NewRequest("POST", "/edit-device/"+device_id, payload)
+				assert.NoError(t, err)
+
+				req.Header.Set("Content-Type", writer.FormDataContentType())
+				req.Header.Set("Cookie", cookies)
+
+				resp := httptest.NewRecorder()
+				router.ServeHTTP(resp, req)
+
+				assert.Equal(t, resp.Code, tt.statusCode)
+
+			} else {
+				req, err := http.NewRequest("POST", "/edit-device/"+device_id, nil)
+				assert.NoError(t, err)
+
+				req.Header.Set("Content-Type", writer.FormDataContentType())
+				req.Header.Set("Cookie", cookies)
+
+				resp := httptest.NewRecorder()
+				router.ServeHTTP(resp, req)
+
+				assert.Equal(t, resp.Code, tt.statusCode)
+			}
+
+		})
+	}
+
 }

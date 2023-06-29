@@ -1,4 +1,4 @@
-# SmartAerators
+# SmartAerators - GuppyTech
 Repository Tugas Akhir
 
 <br>

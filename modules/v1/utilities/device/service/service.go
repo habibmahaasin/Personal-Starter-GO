@@ -3,17 +3,12 @@ package service
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
 func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) (models.ConnectionDat, error) {
 	var data models.ConnectionDat
 	err := json.Unmarshal([]byte(sensorData), &data)
-	if err != nil {
-		fmt.Println(err)
-		return data, err
-	}
 
 	getDetailDevice, err := s.repository.GetDeviceByAntares(antaresDeviceID)
 	if data.Status_device == 1 {

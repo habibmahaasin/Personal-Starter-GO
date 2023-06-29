@@ -1,0 +1,145 @@
+#include <WiFi.h>
+#include <AntaresESP32HTTP.h>
+#include <ArduinoJson.h>
+#include <Arduino.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 23
+
+#define ACCESSKEY "862b34fe2de548cc:cdf66d91b12db8d2"       
+#define WIFISSID "Imron100x"         
+#define PASSWORD "awokwokwok" 
+//#define WIFISSID "Darma"         
+//#define PASSWORD "12345asde"     
+#define projectName "GuppyTech"   
+#define deviceName "AllSensor"     
+
+AntaresESP32HTTP antares(ACCESSKEY);
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+unsigned long hitungan_milis;
+unsigned long milis_sekarang;
+const unsigned long nilai = 5000;
+const int relay = 4;
+
+float resolution;                                
+int measurings;
+float voltage;
+float pHvalue;
+float b = 0.00;
+float m = 0.167;
+float ndo = 0;
+float suhu;
+int power = 1;
+int antaresPower;
+int aeratorMode = 1;
+
+void phsetup (){
+  resolution = 1024.0; 
+}
+
+void phloop (){
+  measurings=0;
+  for (int i = 0; i < 10; i++){
+    measurings = measurings + analogRead(A0);     
+    delay(10);
+  }
+  voltage = ((5 / resolution) * (measurings/10));                                               
+  pHvalue = ((7 + ((2.5 - voltage) / m)))+ b;    
+  
+  Serial.print("pH= ");                          
+  Serial.println(pHvalue);
+}
+
+void suhusetup (){
+  sensors.begin();
+}
+  
+void suhuloop (){
+  sensors.requestTemperatures(); 
+  suhu = sensors.getTempCByIndex(0);
+  Serial.print("Celsius temperature: ");
+  Serial.print(suhu); 
+  Serial.print(" - Fahrenheit temperature: ");
+  Serial.println(sensors.getTempFByIndex(0));  
+}
+
+void nildo(){
+  ndo = suhu + pHvalue;
+  Serial.print("NDO = ");
+  Serial.print(ndo);
+}
+
+void powersetup(){
+  pinMode(relay, OUTPUT);
+}
+
+void powerloop(){
+  if (power == 1) {
+     digitalWrite(relay, LOW);
+     Serial.print("\nDevice Status : ON");
+  }
+  else if (power == 0){
+    digitalWrite(relay, HIGH);
+    Serial.print("\nDevice Status : OFF");
+  }
+  else {
+    Serial.print("\nDevice Status : RELAY ERROR");
+  }
+}
+
+void senddata(){
+    antares.add("aeratorMode", aeratorMode);
+    antares.add("temperature", suhu);
+    antares.add("ph", pHvalue);
+    antares.add("dissolvedOxygen", ndo);
+    antares.add("statusDevice", power);
+    antares.send(projectName, deviceName);
+    Serial.print("\n================================\n");
+    Serial.print("\nData Berhasil Dikirim\n");
+    Serial.print("\n================================\n");
+}
+
+void setup()                                     
+{   
+  phsetup ();
+  suhusetup ();
+  Serial.begin(115200);
+  powersetup();
+  antares.setDebug(true);
+  antares.wifiConnection(WIFISSID,PASSWORD);                                
+}
+
+void loop(){
+  milis_sekarang = millis();
+  if (milis_sekarang - hitungan_milis >= nilai)
+  { 
+    senddata();
+    hitungan_milis = milis_sekarang;
+  }
+  else {
+    phloop ();
+    suhuloop ();
+    nildo();
+    
+    antares.get(projectName, deviceName);
+    aeratorMode = antares.getInt("aeratorMode");
+    
+    if (aeratorMode == 1) {
+      if ( suhu > 31 ) {
+        power = 1;
+      }
+      else {
+        power = 0;
+      }
+    }
+    else if (aeratorMode == 2) {
+      power = antares.getInt("statusDevice");
+      Serial.print("\nAerator Manual");
+    }
+
+    powerloop();
+    Serial.print("\n================================\n");
+  }
+}

@@ -4,7 +4,7 @@
 	[
 		{
 			"source":"/(.*)",
-			"destination":"/main.go"
+			"destination":"./main.go"
 		}
 	]
 }

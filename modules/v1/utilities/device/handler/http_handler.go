@@ -36,7 +36,7 @@ func (h *deviceHandler) Control(c *gin.Context) {
 	mode := c.Param("mode")
 	antares_id := c.Param("antares")
 	power := c.Param("power")
-	token := "862b34fe2de548cc:cdf66d91b12db8d2"
+	token := "f784524323f73064:4c0b580400028426"
 
 	err := h.deviceService.Control(id, power, mode)
 	if err != nil {

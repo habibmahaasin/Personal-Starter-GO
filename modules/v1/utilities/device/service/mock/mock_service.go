@@ -48,6 +48,20 @@ func (mr *MockServiceMockRecorder) AddDevice(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDevice", reflect.TypeOf((*MockService)(nil).AddDevice), arg0, arg1)
 }
 
+// Calibration mocks base method.
+func (m *MockService) Calibration(arg0 models.PhCalibration) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Calibration", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Calibration indicates an expected call of Calibration.
+func (mr *MockServiceMockRecorder) Calibration(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Calibration", reflect.TypeOf((*MockService)(nil).Calibration), arg0)
+}
+
 // Control mocks base method.
 func (m *MockService) Control(arg0, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
@@ -169,17 +183,17 @@ func (mr *MockServiceMockRecorder) GetDeviceHistoryById(arg0, arg1 interface{}) 
 }
 
 // PostControlAntares mocks base method.
-func (m *MockService) PostControlAntares(arg0, arg1, arg2, arg3 string) error {
+func (m *MockService) PostControlAntares(arg0, arg1, arg2, arg3, arg4, arg5 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostControlAntares", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "PostControlAntares", arg0, arg1, arg2, arg3, arg4, arg5)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PostControlAntares indicates an expected call of PostControlAntares.
-func (mr *MockServiceMockRecorder) PostControlAntares(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) PostControlAntares(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostControlAntares", reflect.TypeOf((*MockService)(nil).PostControlAntares), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostControlAntares", reflect.TypeOf((*MockService)(nil).PostControlAntares), arg0, arg1, arg2, arg3, arg4, arg5)
 }
 
 // UpdateDeviceById mocks base method.

@@ -43,6 +43,14 @@
             <i class='bx bx-cog nav_icon'></i>
             <span class="nav_name">Pengaturan Perangkat</span>
           </a>
+          {{ if or (eq .title "Kalibrasi Sensor")}}
+            <a href="/kalibrasi-sensor" class="nav_link active">
+          {{ else }}
+            <a href="/kalibrasi-sensor" class="nav_link">
+          {{ end }}
+            <i class='bx bx-target-lock nav_icon' ></i>
+            <span class="nav_name">Kalibrasi Sensor</span>
+          </a>
           {{ if (eq .title "Laporan") }}
             <a href="/laporan" class="nav_link active">
           {{ else }}

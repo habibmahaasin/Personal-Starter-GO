@@ -3,6 +3,7 @@ package repository
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -11,8 +12,10 @@ import (
 )
 
 func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) (error, error) {
-	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, history_date) VALUES (?,?,?,?,?,?,now())", input.Status_device, input.Device_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen).Error
-	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, date_updated = now() WHERE device_id = ?", input.Status_device, input.Device_mode, Device_id).Error
+	fmt.Println("Device_id", Device_id)
+	fmt.Println("input", input)
+	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, history_date) VALUES (?,?,?,?,?,?,?,?,now())", input.Status_device, input.Device_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, input.Ph_calibration_firstval, input.Ph_calibration_secval).Error
+	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() WHERE device_id = ?", input.Status_device, input.Device_mode, input.Ph_calibration_firstval, input.Ph_calibration_secval, Device_id).Error
 	return err, err2
 }
 
@@ -40,14 +43,14 @@ func (r *repository) Control(id string, power string, mode string) error {
 	return err
 }
 
-func (r *repository) PostControlAntares(antares_id string, token string, power string, mode string) error {
-	data := "\r\n{\r\n  \"m2m:cin\": {\r\n    \"con\": \"{ \\\"aeratorMode\\\":" + mode + ", \\\"statusDevice\\\":" + power + "}\"\r\n    }\r\n}"
+func (r *repository) PostControlAntares(antares_id string, token string, power string, mode string, ph_cal1 string, ph_cal2 string) error {
+	data := "\r\n{\r\n  \"m2m:cin\": {\r\n    \"con\": \"{ \\\"source_data\\\":\\\"website\\\" , \\\"aeratorMode\\\":" + mode + ", \\\"statusDevice\\\":" + power + ",\\\"calibration_ph1\\\":" + ph_cal1 + ", \\\"calibration_ph2\\\":" + ph_cal2 + "}\"\r\n    }\r\n}"
 
 	timeout := time.Duration(5 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
-
+	// "\\\"cal_ph1\\\":" + ph_cal1 + ",\\\"cal_ph2\\\":" + ph_cal2 + "
 	req, err := http.NewRequest("POST", r.conf.App.Antares_url+"/cnt-"+antares_id, bytes.NewBuffer([]byte(data)))
 	if err != nil {
 		return err
@@ -78,7 +81,7 @@ func (r *repository) AddDevice(input models.DeviceInput, user_id string) error {
 
 func (r *repository) GetDeviceById(u_id string, d_id string) (models.Device, error) {
 	var device models.Device
-	err := r.db.Raw("select d.device_id, d.antares_id, d.device_name, d.device_location, d.mode_id, dm.mode_name, d.status_id, ds.status_name, d.brand_id,b.brand_name, d.user_id, d.latitude, d.longitude, d.date_created, d.date_updated from devices d inner join device_status ds ON d.status_id = ds.status_id inner join device_mode dm on d.mode_id = dm.mode_id inner join brand b on b.brand_id = d.brand_id where d.device_id = ? and user_id = ?", d_id, u_id).Scan(&device).Error
+	err := r.db.Raw("select d.device_id, d.antares_id, d.device_name, d.device_location, d.mode_id, dm.mode_name, d.status_id, ds.status_name, d.brand_id,b.brand_name, d.user_id, d.latitude, d.longitude, d.ph_calibration_firstval, d.ph_calibration_secval, d.date_created, d.date_updated from devices d inner join device_status ds ON d.status_id = ds.status_id inner join device_mode dm on d.mode_id = dm.mode_id inner join brand b on b.brand_id = d.brand_id where d.device_id = ? and user_id = ?", d_id, u_id).Scan(&device).Error
 	return device, err
 }
 
@@ -102,5 +105,10 @@ func (r *repository) GetDeviceBrands() ([]models.Device, error) {
 
 func (r *repository) UpdateDeviceById(up_input models.DeviceInput, device_id string) error {
 	err := r.db.Exec("update devices set device_name = ?, antares_id = ?, device_location = ?, latitude = ?, longitude = ?, brand_id = ?, mode_id = ?, date_updated = now() where device_id = ?", up_input.Device_name, up_input.Antares_id, up_input.Device_location, up_input.Latitude, up_input.Longitude, up_input.Brand_id, up_input.Mode_id, device_id).Error
+	return err
+}
+
+func (r *repository) Calibration(input models.PhCalibration) error {
+	err := r.db.Exec("update devices set ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() where device_id = ?", input.Ph_calibration_firstval, input.Ph_calibration_secval, input.Device_id).Error
 	return err
 }

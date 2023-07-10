@@ -17,22 +17,24 @@ type Sensor_Data struct {
 }
 
 type Device struct {
-	Device_id              string
-	Antares_id             string
-	Device_name            string
-	Device_location        string
-	Status_id              string
-	Status_name            string
-	Mode_id                string
-	Mode_name              string
-	Brand_id               int
-	Brand_name             string
-	User_id                string
-	Latitude               string
-	Longitude              string
-	Date_created           time.Time
-	Date_updated           time.Time
-	Date_updated_formatter string
+	Device_id               string
+	Antares_id              string
+	Device_name             string
+	Device_location         string
+	Status_id               string
+	Status_name             string
+	Mode_id                 string
+	Mode_name               string
+	Brand_id                int
+	Brand_name              string
+	User_id                 string
+	Latitude                string
+	Longitude               string
+	Ph_calibration_firstval string
+	Ph_calibration_secval   string
+	Date_created            time.Time
+	Date_updated            time.Time
+	Date_updated_formatter  string
 }
 
 type DeviceHistory struct {

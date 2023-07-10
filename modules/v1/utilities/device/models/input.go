@@ -25,12 +25,14 @@ type AntaresDetail struct {
 }
 
 type ConnectionDat struct {
-	Device_mode      int     `json:"aeratorMode"`
-	Status_device    int     `json:"statusDevice"`
-	Temperature      float64 `json:"temperature"`
-	Ph               float64 `json:"ph"`
-	Dissolved_oxygen float64 `json:"dissolvedOxygen"`
-	Device_id        string
+	Device_mode             int     `json:"aeratorMode"`
+	Status_device           int     `json:"statusDevice"`
+	Temperature             float64 `json:"temperature"`
+	Ph                      float64 `json:"ph"`
+	Dissolved_oxygen        float64 `json:"dissolvedOxygen"`
+	Ph_calibration_firstval float64 `json:"calibration_ph1"`
+	Ph_calibration_secval   float64 `json:"calibration_ph2"`
+	Device_id               string
 }
 
 type ObjectAntares5 struct {
@@ -73,4 +75,10 @@ type DeviceInput struct {
 	Longitude       string `json:"longitude" form:"longitude" binding:"required"`
 	Brand_id        string `json:"brand_id" form:"brand_id" binding:"required"`
 	Mode_id         string `json:"mode_id" form:"mode_id" binding:"required"`
+}
+
+type PhCalibration struct {
+	Device_id               string `json:"device_id" form:"device_id" binding:"required"`
+	Ph_calibration_firstval string `json:"ph_calibration_firstval" form:"ph_calibration_firstval"`
+	Ph_calibration_secval   string `json:"ph_calibration_secval" form:"ph_calibration_secval"`
 }

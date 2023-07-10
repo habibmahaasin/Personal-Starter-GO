@@ -189,3 +189,18 @@ func (h *deviceView) EditDevice(c *gin.Context) {
 		"brands":         brandList,
 	})
 }
+
+func (h *deviceView) Calibration(c *gin.Context) {
+	session := sessions.Default(c)
+	user_email := session.Get("email")
+	full_name := session.Get("full_name")
+	user_id := session.Get("user_id")
+	ListDevice, _ := h.deviceService.GetAllDevices(user_id.(string))
+
+	c.HTML(http.StatusOK, "calibration.html", gin.H{
+		"title":      "Kalibrasi Sensor",
+		"email":      user_email,
+		"full_name":  full_name,
+		"listDevice": ListDevice,
+	})
+}

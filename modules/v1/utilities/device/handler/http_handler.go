@@ -2,7 +2,6 @@ package handler
 
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
-	api "GuppyTech/pkg/api_response"
 	"GuppyTech/pkg/helpers"
 	"fmt"
 	"log"
@@ -21,11 +20,12 @@ func (h *deviceHandler) SubscribeWebhook(c *gin.Context) {
 		c.JSON(220, response)
 		return
 	}
+
+	fmt.Println(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con)
 	Antares_Device_Id := strings.Replace(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Pi, "/antares-cse/cnt-", "", -1)
-	Input, err := h.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
-	if err == nil {
-		response := api.APIRespon("Success", 200, "success", Input)
-		c.JSON(200, response)
+	_, err := h.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 }
@@ -43,8 +43,13 @@ func (h *deviceHandler) Control(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+
+	session := sessions.Default(c)
+	user_id := session.Get("user_id").(string)
+	getDeviceById, _ := h.deviceService.GetDeviceById(user_id, id)
+
 	for i := 0; i < 2; i++ {
-		err = h.deviceService.PostControlAntares(antares_id, token, power, mode)
+		err = h.deviceService.PostControlAntares(antares_id, token, power, mode, getDeviceById.Ph_calibration_firstval, getDeviceById.Ph_calibration_secval)
 		time.Sleep(2 * time.Second)
 	}
 
@@ -94,4 +99,31 @@ func (h *deviceHandler) EditDevice(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusFound, "/daftar-perangkat")
+}
+
+func (h *deviceHandler) Calibration(c *gin.Context) {
+	var input models.PhCalibration
+	token := "f784524323f73064:4c0b580400028426"
+	session := sessions.Default(c)
+	user_id := session.Get("user_id").(string)
+
+	err := c.ShouldBind(&input)
+	device, _ := h.deviceService.GetDeviceById(user_id, input.Device_id)
+
+	for i := 0; i < 2; i++ {
+		if device.Status_id == "10" {
+			device.Status_id = "0"
+		} else if device.Status_id == "11" {
+			device.Status_id = "1"
+		}
+		err = h.deviceService.PostControlAntares(device.Antares_id, token, device.Status_id, device.Mode_id, input.Ph_calibration_firstval, input.Ph_calibration_secval)
+		time.Sleep(2 * time.Second)
+	}
+
+	err = h.deviceService.Calibration(input)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/kalibrasi-sensor")
 }

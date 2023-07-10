@@ -82,7 +82,7 @@ func Test_SubscribeWebhook(t *testing.T) {
 							"st" : 0,
 							"cnf" : "text/plain:0",
 							"cs" : 266,
-							"con" : "{\"aeratorMode\":2,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":10}"
+							"con" : "{\"aeratorMode\":2,\"temperature\":28.375,\"ph\":21.97006,\"dissolvedOxygen\":50.34506,\"statusDevice\":10, \"calibration_ph1\":11.5,\"calibration_ph2\":11.5}"
 							}
 						},
 						"m2m:rss" : 1
@@ -93,7 +93,7 @@ func Test_SubscribeWebhook(t *testing.T) {
 			}
 			`,
 			statusCode: 200,
-			response:   `{"meta":{"message":"Success","code":200,"status":"success"},"data":{"aeratorMode":2,"statusDevice":10,"temperature":28.375,"ph":21.97006,"dissolvedOxygen":50.34506,"Device_id":""}}`,
+			response:   ``,
 		},
 		{
 			name: "Format Input Tidak Sesuai",
@@ -135,9 +135,10 @@ func Test_Control(t *testing.T) {
 	ctrler := gomock.NewController(t)
 	defer ctrler.Finish()
 
+	cookies := "GuppyTech=MTY4Nzg4OTQyOXxEdi1CQkFFQ180SUFBUkFCRUFBQV81N19nZ0FEQm5OMGNtbHVad3dKQUFkMWMyVnlYMmxrQm5OMGNtbHVad3dtQUNSaE9UWXlNekl4WXkwMllqTmhMVFJpT1RJdE9HRTNNQzA1TnpJNVlURm1NVFZpTnpVR2MzUnlhVzVuREFjQUJXVnRZV2xzQm5OMGNtbHVad3dTQUJCaFpHMXBia0JuZFhCd2VTNTBaV05vQm5OMGNtbHVad3dMQUFsbWRXeHNYMjVoYldVR2MzUnlhVzVuREJFQUQwZDFjSEI1VkdWamFDQkJaRzFwYmc9PXw-fMZDrPRUEhzbOESI0OFERF_CY7HCa7iBnNZfrmK-Yg=="
 	id := "e5d415f7-a96b-4dc2-84b8-64a1830b4c01"
 	antares_id := "ps9t5UiX15TVLxYB"
-	antares_token := "862b34fe2de548cc:cdf66d91b12db8d2"
+	antares_token := "f784524323f73064:4c0b580400028426"
 
 	tests := []struct {
 		name       string
@@ -155,8 +156,12 @@ func Test_Control(t *testing.T) {
 			statusCode: 302,
 			beforeTest: func(deviceService *m_deviceService.MockService) {
 				deviceService.EXPECT().Control(id, "10", "2").Return(nil)
+				deviceService.EXPECT().GetDeviceById("a962321c-6b3a-4b92-8a70-9729a1f15b75", id).Return(models.Device{
+					Ph_calibration_firstval: "100",
+					Ph_calibration_secval:   "100",
+				}, nil)
 				for i := 0; i < 2; i++ {
-					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "10", "2").Return(nil)
+					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "10", "2", "100", "100").Return(nil)
 				}
 			},
 		},
@@ -168,8 +173,12 @@ func Test_Control(t *testing.T) {
 			statusCode: 302,
 			beforeTest: func(deviceService *m_deviceService.MockService) {
 				deviceService.EXPECT().Control(id, "11", "1").Return(nil)
+				deviceService.EXPECT().GetDeviceById("a962321c-6b3a-4b92-8a70-9729a1f15b75", id).Return(models.Device{
+					Ph_calibration_firstval: "100",
+					Ph_calibration_secval:   "100",
+				}, nil)
 				for i := 0; i < 2; i++ {
-					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1").Return(nil)
+					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1", "100", "100").Return(nil)
 				}
 			},
 		},
@@ -202,6 +211,7 @@ func Test_Control(t *testing.T) {
 
 			router.GET("/control/:page/:id/:antares/:mode/:power", handler)
 			req, err := http.NewRequest("GET", "/control/"+tt.page+"/"+id+"/"+antares_id+"/"+tt.mode+"/"+tt.power, nil)
+			req.Header.Set("Cookie", cookies)
 			assert.NoError(t, err)
 
 			resp := httptest.NewRecorder()

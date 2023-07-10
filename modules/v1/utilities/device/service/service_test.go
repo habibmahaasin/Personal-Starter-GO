@@ -291,7 +291,7 @@ func Test_PostControlAntares(t *testing.T) {
 			power:    "11",
 			mode:     "2",
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
-				deviceService.EXPECT().PostControlAntares(antares_id, token, "1", "2").Return(nil)
+				deviceService.EXPECT().PostControlAntares(antares_id, token, "1", "2", "100", "100").Return(nil)
 			},
 			result: nil,
 		},
@@ -300,7 +300,7 @@ func Test_PostControlAntares(t *testing.T) {
 			power:    "10",
 			mode:     "1",
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
-				deviceService.EXPECT().PostControlAntares(antares_id, token, "0", "1").Return(nil)
+				deviceService.EXPECT().PostControlAntares(antares_id, token, "0", "1", "100", "100").Return(nil)
 			},
 			result: nil,
 		},
@@ -318,7 +318,7 @@ func Test_PostControlAntares(t *testing.T) {
 				test.beforeTest(mockRepository)
 			}
 
-			err := w.PostControlAntares(antares_id, token, test.power, test.mode)
+			err := w.PostControlAntares(antares_id, token, test.power, test.mode, "100", "100")
 			if err != nil {
 				assert.Error(t, err)
 			} else {

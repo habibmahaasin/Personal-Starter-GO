@@ -3,6 +3,7 @@ package service
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -19,6 +20,8 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 		data.Status_device = 10
 	}
 
+	fmt.Println(sensorData)
+	fmt.Println(data)
 	err, _ = s.repository.BindSensorData(getDetailDevice.Device_id, data)
 	return data, err
 }
@@ -48,13 +51,13 @@ func (s *service) Control(id string, power string, mode string) error {
 	return s.repository.Control(id, power, mode)
 }
 
-func (s *service) PostControlAntares(antares_id string, token string, power string, mode string) error {
+func (s *service) PostControlAntares(antares_id string, token string, power string, mode string, ph_cal1 string, ph_cal2 string) error {
 	if power == "11" {
 		power = "1"
 	} else if power == "10" {
 		power = "0"
 	}
-	return s.repository.PostControlAntares(antares_id, token, power, mode)
+	return s.repository.PostControlAntares(antares_id, token, power, mode, ph_cal1, ph_cal2)
 }
 
 func (s *service) AddDevice(input models.DeviceInput, user_id string) error {
@@ -88,4 +91,8 @@ func (s *service) GetDeviceBrands() ([]models.Device, error) {
 
 func (s *service) UpdateDeviceById(up_input models.DeviceInput, device_id string) error {
 	return s.repository.UpdateDeviceById(up_input, device_id)
+}
+
+func (s *service) Calibration(input models.PhCalibration) error {
+	return s.repository.Calibration(input)
 }

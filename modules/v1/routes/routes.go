@@ -43,7 +43,7 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	device.GET("/tambah-perangkat", middlewares.IsLogin(), deviceViewV1.AddDevice)
 	device.POST("/tambah-perangkat", middlewares.IsLogin(), deviceHandlerV1.AddDevice)
 	device.GET("/detail-perangkat/:id", middlewares.IsLogin(), deviceViewV1.DetailDevice)
-	device.GET("/control/:page/:id/:antares/:mode/:power", middlewares.IsLogin(), deviceHandlerV1.Control)
+	device.GET("/control/:page/:id/:mode/:power", middlewares.IsLogin(), deviceHandlerV1.Control)
 	device.GET("/hapus-perangkat/:id", middlewares.IsLogin(), deviceHandlerV1.DeleteDevice)
 	device.GET("/ubah-perangkat/:id", middlewares.IsLogin(), deviceViewV1.EditDevice)
 	device.POST("/ubah-perangkat/:id", middlewares.IsLogin(), deviceHandlerV1.EditDevice)

@@ -15,10 +15,10 @@
         </div>
         <div class="mb-3">
             <label for="device_name" class="form-label">Pilih Perangkat</label>
-            <select class="form-select" id="device_id" name="device_id" aria-label="Default select example" required>
+            <select class="form-select" id="antares_id" name="antares_id" aria-label="Default select example" required>
                 <option value="" disabled selected>Pilih Devices</option>
                 {{ range .listDevice }}
-                  <option value="{{ .Device_id }}">{{ .Device_name }}</option>
+                  <option value="{{ .Antares_id }}">{{ .Device_name }}</option>
                 {{ end }}
             </select>
         </div>

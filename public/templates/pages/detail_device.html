@@ -67,7 +67,7 @@
                           </p>
                       </div>
                       <div class="switcher">
-                        <label for="toggle-otomatis-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Mode_id `1`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/2/{{ .deviceInfo.Status_id }}')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/1/{{ .deviceInfo.Status_id }}')" {{ end }}>
+                        <label for="toggle-otomatis-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Mode_id `1`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/2/{{ .deviceInfo.Status_id }}')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/1/{{ .deviceInfo.Status_id }}')" {{ end }}>
                           <input type="checkbox" {{ if eq .deviceInfo.Mode_id `1` }} Checked {{ else }} {{ end }} id="toggle-otomatis-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
                         </label>
                       </div>
@@ -82,7 +82,7 @@
                           </p>
                       </div>
                       <div class="switcher {{ if eq .deviceInfo.Mode_id `1` }} disabled-switcher {{ else }} {{ end }}">
-                        <label for="toggle-manual-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Status_id `11`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/10')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Antares_id }}/{{ .deviceInfo.Mode_id }}/11')" {{ end }}>
+                        <label for="toggle-manual-{{ .deviceInfo.Device_id }}" {{ if eq .deviceInfo.Status_id `11`}} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Mode_id }}/10')" {{ else }} onclick="ControllingFromDetail('detail_perangkat/{{ .deviceInfo.Device_id }}/{{ .deviceInfo.Mode_id }}/11')" {{ end }}>
                           <input type="checkbox" {{ if eq .deviceInfo.Status_id `11` }} Checked {{ else }} {{ end }} id="toggle-manual-{{ .deviceInfo.Device_id }}"/><span><small></small></span>
                         </label>
                       </div>

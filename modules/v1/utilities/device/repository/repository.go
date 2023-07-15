@@ -3,7 +3,6 @@ package repository
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -12,10 +11,8 @@ import (
 )
 
 func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) (error, error) {
-	fmt.Println("Device_id", Device_id)
-	fmt.Println("input", input)
-	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, history_date) VALUES (?,?,?,?,?,?,?,?,now())", input.Status_device, input.Device_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, input.Ph_calibration_firstval, input.Ph_calibration_secval).Error
-	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() WHERE device_id = ?", input.Status_device, input.Device_mode, input.Ph_calibration_firstval, input.Ph_calibration_secval, Device_id).Error
+	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, history_date) VALUES (?,?,?,?,?,?,?,?,now())", input.Aerator_status, input.Aerator_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, input.Ph_calibration_firstval, input.Ph_calibration_secval).Error
+	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() WHERE device_id = ?", input.Aerator_status, input.Aerator_mode, input.Ph_calibration_firstval, input.Ph_calibration_secval, Device_id).Error
 	return err, err2
 }
 
@@ -43,14 +40,14 @@ func (r *repository) Control(id string, power string, mode string) error {
 	return err
 }
 
-func (r *repository) PostControlAntares(antares_id string, token string, power string, mode string, ph_cal1 string, ph_cal2 string) error {
-	data := "\r\n{\r\n  \"m2m:cin\": {\r\n    \"con\": \"{ \\\"source_data\\\":\\\"website\\\" , \\\"aeratorMode\\\":" + mode + ", \\\"statusDevice\\\":" + power + ",\\\"calibration_ph1\\\":" + ph_cal1 + ", \\\"calibration_ph2\\\":" + ph_cal2 + "}\"\r\n    }\r\n}"
+func (r *repository) PostControlAntares(antares_id string, token string, power string, mode string) error {
+	data := "\r\n{\r\n  \"m2m:cin\": {\r\n    \"con\": \"{ \\\"source_data\\\":\\\"website\\\" , \\\"header\\\": 2 , \\\"aerator_mode\\\":" + mode + ", \\\"aerator_status\\\":" + power + "}\"\r\n    }\r\n}"
 
 	timeout := time.Duration(5 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
-	// "\\\"cal_ph1\\\":" + ph_cal1 + ",\\\"cal_ph2\\\":" + ph_cal2 + "
+
 	req, err := http.NewRequest("POST", r.conf.App.Antares_url+"/cnt-"+antares_id, bytes.NewBuffer([]byte(data)))
 	if err != nil {
 		return err
@@ -109,6 +106,36 @@ func (r *repository) UpdateDeviceById(up_input models.DeviceInput, device_id str
 }
 
 func (r *repository) Calibration(input models.PhCalibration) error {
-	err := r.db.Exec("update devices set ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() where device_id = ?", input.Ph_calibration_firstval, input.Ph_calibration_secval, input.Device_id).Error
+	err := r.db.Exec("update devices set ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() where antares_id = ?", input.Ph_calibration_firstval, input.Ph_calibration_secval, input.Antares_id).Error
 	return err
+}
+
+func (r *repository) PostCalibrationAntares(token string, input models.PhCalibration) error {
+	data := "\r\n{\r\n  \"m2m:cin\": {\r\n    \"con\": \"{ \\\"source_data\\\":\\\"website\\\" , \\\"header\\\": 3 , \\\"value_ph_k\\\":" + input.Ph_calibration_firstval + ", \\\"value_ph_x\\\":" + input.Ph_calibration_secval + "}\"\r\n    }\r\n}"
+
+	timeout := time.Duration(5 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	req, err := http.NewRequest("POST", r.conf.App.Antares_url+"/cnt-"+input.Antares_id, bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("X-M2M-Origin", token)
+	req.Header.Set("Content-Type", "application/json;ty=4")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	_, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -86,8 +86,8 @@ func (s *Suite) Test_repository_GetAllDevices() {
 
 func (s *Suite) Test_repository_BindSensorData() {
 	var (
-		Device_mode             = 1
-		Status_device           = 2
+		Aerator_mode            = 1
+		Aerator_status          = 2
 		Temperature             = 30
 		Ph                      = 7
 		Dissolved_oxygen        = 5
@@ -97,13 +97,13 @@ func (s *Suite) Test_repository_BindSensorData() {
 	)
 
 	s.mock.ExpectExec(regexp.QuoteMeta("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, history_date) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,now())")).
-		WithArgs(Status_device, Device_mode, Device_id, float64(Temperature), float64(Ph), float64(Dissolved_oxygen), float64(Ph_calibration_firstval), float64(Ph_calibration_secval)).
+		WithArgs(Aerator_status, Aerator_mode, Device_id, float64(Temperature), float64(Ph), float64(Dissolved_oxygen), float64(Ph_calibration_firstval), float64(Ph_calibration_secval)).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	s.mock.ExpectExec(regexp.QuoteMeta("UPDATE devices SET status_id  = $1, mode_id  = $2, ph_calibration_firstval = $3, ph_calibration_secval = $4, date_updated = now() WHERE device_id = $5")).
-		WithArgs(Status_device, Device_mode, float64(Ph_calibration_firstval), float64(Ph_calibration_secval), Device_id).
+		WithArgs(Aerator_status, Aerator_mode, float64(Ph_calibration_firstval), float64(Ph_calibration_secval), Device_id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err, err2 := s.repository.BindSensorData(Device_id, models.ConnectionDat{Device_mode: Device_mode, Status_device: Status_device, Temperature: float64(Temperature), Ph: float64(Ph), Dissolved_oxygen: float64(Dissolved_oxygen), Ph_calibration_firstval: float64(Ph_calibration_firstval), Ph_calibration_secval: float64(Ph_calibration_secval)})
+	err, err2 := s.repository.BindSensorData(Device_id, models.ConnectionDat{Aerator_mode: Aerator_mode, Aerator_status: Aerator_status, Temperature: float64(Temperature), Ph: float64(Ph), Dissolved_oxygen: float64(Dissolved_oxygen), Ph_calibration_firstval: float64(Ph_calibration_firstval), Ph_calibration_secval: float64(Ph_calibration_secval)})
 	require.NoError(s.T(), err)
 	require.NoError(s.T(), err2)
 	require.Nil(s.T(), deep.Equal(nil, err))
@@ -180,7 +180,7 @@ func (s *Suite) Test_repository_PostControlAntares() {
 		s.DB,
 		s.config,
 	}
-	err := repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2", "100", "100")
+	err := repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
 	require.NoError(s.T(), err)
 
 	//error case http.NewRequest()
@@ -193,7 +193,7 @@ func (s *Suite) Test_repository_PostControlAntares() {
 		s.DB,
 		s.config,
 	}
-	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2", "100", "100")
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
 	require.Error(s.T(), err)
 
 	//error case client.Do()
@@ -206,7 +206,7 @@ func (s *Suite) Test_repository_PostControlAntares() {
 		s.DB,
 		s.config,
 	}
-	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2", "100", "100")
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
 	require.Error(s.T(), err)
 
 	//error case ioutil.ReadAll()
@@ -219,7 +219,7 @@ func (s *Suite) Test_repository_PostControlAntares() {
 		s.DB,
 		s.config,
 	}
-	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2", "100", "100")
+	err = repo.PostControlAntares("ps9t5UiX15TVLxYB", "862b34fe2de548cc:cdf66d91b12db8d2", "1", "2")
 	require.Error(s.T(), err)
 }
 

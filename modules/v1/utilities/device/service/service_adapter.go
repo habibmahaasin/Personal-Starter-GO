@@ -11,7 +11,7 @@ type Service interface {
 	GetAllDevices(user_id string) ([]models.Device, error)
 	GetDeviceHistory(user_id string) ([]models.DeviceHistory, string, error)
 	Control(id string, power string, mode string) error
-	PostControlAntares(antares_id string, token string, power string, mode string, ph_cal1 string, ph_cal2 string) error
+	PostControlAntares(antares_id string, token string, power string, mode string) error
 	AddDevice(input models.DeviceInput, user_id string) error
 	GetDeviceById(u_id string, d_id string) (models.Device, error)
 	GetDeviceHistoryById(d_id string, u_id string) ([]models.DeviceHistory, string, error)
@@ -19,6 +19,7 @@ type Service interface {
 	GetDeviceBrands() ([]models.Device, error)
 	UpdateDeviceById(up_input models.DeviceInput, device_id string) error
 	Calibration(input models.PhCalibration) error
+	PostCalibrationAntares(token string, input models.PhCalibration) error
 }
 
 type service struct {

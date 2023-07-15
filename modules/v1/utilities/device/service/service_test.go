@@ -43,8 +43,8 @@ func Test_GetDatafromWebhook(t *testing.T) {
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
 				deviceService.EXPECT().GetDeviceByAntares(antares_id).Return(output, nil)
 				deviceService.EXPECT().BindSensorData(output.Device_id, models.ConnectionDat{
-					Status_device:    11,
-					Device_mode:      2,
+					Aerator_status:   11,
+					Aerator_mode:     2,
 					Temperature:      0,
 					Ph:               0,
 					Dissolved_oxygen: 0,
@@ -58,8 +58,8 @@ func Test_GetDatafromWebhook(t *testing.T) {
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
 				deviceService.EXPECT().GetDeviceByAntares(antares_id).Return(output, nil)
 				deviceService.EXPECT().BindSensorData(output.Device_id, models.ConnectionDat{
-					Status_device:    10,
-					Device_mode:      1,
+					Aerator_status:   10,
+					Aerator_mode:     1,
 					Temperature:      0,
 					Ph:               0,
 					Dissolved_oxygen: 0,
@@ -73,8 +73,8 @@ func Test_GetDatafromWebhook(t *testing.T) {
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
 				deviceService.EXPECT().GetDeviceByAntares(antares_id).Return(output, nil)
 				deviceService.EXPECT().BindSensorData(output.Device_id, models.ConnectionDat{
-					Status_device:    10,
-					Device_mode:      1,
+					Aerator_status:   10,
+					Aerator_mode:     1,
 					Temperature:      0,
 					Ph:               0,
 					Dissolved_oxygen: 0,
@@ -291,7 +291,7 @@ func Test_PostControlAntares(t *testing.T) {
 			power:    "11",
 			mode:     "2",
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
-				deviceService.EXPECT().PostControlAntares(antares_id, token, "1", "2", "100", "100").Return(nil)
+				deviceService.EXPECT().PostControlAntares(antares_id, token, "1", "2").Return(nil)
 			},
 			result: nil,
 		},
@@ -300,7 +300,7 @@ func Test_PostControlAntares(t *testing.T) {
 			power:    "10",
 			mode:     "1",
 			beforeTest: func(deviceService *m_deviceRepository.MockRepository) {
-				deviceService.EXPECT().PostControlAntares(antares_id, token, "0", "1", "100", "100").Return(nil)
+				deviceService.EXPECT().PostControlAntares(antares_id, token, "0", "1").Return(nil)
 			},
 			result: nil,
 		},
@@ -318,7 +318,7 @@ func Test_PostControlAntares(t *testing.T) {
 				test.beforeTest(mockRepository)
 			}
 
-			err := w.PostControlAntares(antares_id, token, test.power, test.mode, "100", "100")
+			err := w.PostControlAntares(antares_id, token, test.power, test.mode)
 			if err != nil {
 				assert.Error(t, err)
 			} else {

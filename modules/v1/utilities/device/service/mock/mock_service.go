@@ -182,18 +182,32 @@ func (mr *MockServiceMockRecorder) GetDeviceHistoryById(arg0, arg1 interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDeviceHistoryById", reflect.TypeOf((*MockService)(nil).GetDeviceHistoryById), arg0, arg1)
 }
 
-// PostControlAntares mocks base method.
-func (m *MockService) PostControlAntares(arg0, arg1, arg2, arg3, arg4, arg5 string) error {
+// PostCalibrationAntares mocks base method.
+func (m *MockService) PostCalibrationAntares(arg0 string, arg1 models.PhCalibration) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostControlAntares", arg0, arg1, arg2, arg3, arg4, arg5)
+	ret := m.ctrl.Call(m, "PostCalibrationAntares", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PostCalibrationAntares indicates an expected call of PostCalibrationAntares.
+func (mr *MockServiceMockRecorder) PostCalibrationAntares(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostCalibrationAntares", reflect.TypeOf((*MockService)(nil).PostCalibrationAntares), arg0, arg1)
+}
+
+// PostControlAntares mocks base method.
+func (m *MockService) PostControlAntares(arg0, arg1, arg2, arg3 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostControlAntares", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PostControlAntares indicates an expected call of PostControlAntares.
-func (mr *MockServiceMockRecorder) PostControlAntares(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) PostControlAntares(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostControlAntares", reflect.TypeOf((*MockService)(nil).PostControlAntares), arg0, arg1, arg2, arg3, arg4, arg5)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostControlAntares", reflect.TypeOf((*MockService)(nil).PostControlAntares), arg0, arg1, arg2, arg3)
 }
 
 // UpdateDeviceById mocks base method.

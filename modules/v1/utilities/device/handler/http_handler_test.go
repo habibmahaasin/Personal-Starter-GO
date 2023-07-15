@@ -157,12 +157,9 @@ func Test_Control(t *testing.T) {
 			beforeTest: func(deviceService *m_deviceService.MockService) {
 				deviceService.EXPECT().Control(id, "10", "2").Return(nil)
 				deviceService.EXPECT().GetDeviceById("a962321c-6b3a-4b92-8a70-9729a1f15b75", id).Return(models.Device{
-					Ph_calibration_firstval: "100",
-					Ph_calibration_secval:   "100",
+					Antares_id: "ps9t5UiX15TVLxYB",
 				}, nil)
-				for i := 0; i < 2; i++ {
-					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "10", "2", "100", "100").Return(nil)
-				}
+				deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "10", "2").Return(nil)
 			},
 		},
 		{
@@ -174,22 +171,23 @@ func Test_Control(t *testing.T) {
 			beforeTest: func(deviceService *m_deviceService.MockService) {
 				deviceService.EXPECT().Control(id, "11", "1").Return(nil)
 				deviceService.EXPECT().GetDeviceById("a962321c-6b3a-4b92-8a70-9729a1f15b75", id).Return(models.Device{
-					Ph_calibration_firstval: "100",
-					Ph_calibration_secval:   "100",
+					Antares_id: "ps9t5UiX15TVLxYB",
 				}, nil)
-				for i := 0; i < 2; i++ {
-					deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1", "100", "100").Return(nil)
-				}
+				deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1").Return(nil)
 			},
 		},
 		{
 			name:       "Test Controlling Gagal",
-			mode:       "2000",
-			power:      "1000",
+			mode:       "1",
+			power:      "11",
 			page:       "daftar_perangkat",
 			statusCode: 200,
 			beforeTest: func(deviceService *m_deviceService.MockService) {
-				deviceService.EXPECT().Control(id, "1000", "2000").Return(errors.New("Error"))
+				deviceService.EXPECT().GetDeviceById("a962321c-6b3a-4b92-8a70-9729a1f15b75", id).Return(models.Device{
+					Antares_id: "ps9t5UiX15TVLxYB",
+				}, nil)
+				deviceService.EXPECT().PostControlAntares(antares_id, antares_token, "11", "1").Return(nil)
+				deviceService.EXPECT().Control(id, "11", "1").Return(errors.New("Error"))
 			},
 		},
 	}

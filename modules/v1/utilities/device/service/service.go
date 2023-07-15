@@ -12,17 +12,19 @@ func (s *service) GetDatafromWebhook(sensorData string, antaresDeviceID string) 
 	err := json.Unmarshal([]byte(sensorData), &data)
 
 	getDetailDevice, err := s.repository.GetDeviceByAntares(antaresDeviceID)
-	if data.Status_device == 1 {
-		data.Status_device = 11
-	} else if data.Status_device == 0 {
-		data.Status_device = 10
+	if data.Aerator_status == 1 {
+		data.Aerator_status = 11
+	} else if data.Aerator_status == 0 {
+		data.Aerator_status = 10
 	} else {
-		data.Status_device = 10
+		data.Aerator_status = 10
 	}
 
-	fmt.Println(sensorData)
-	fmt.Println(data)
-	err, _ = s.repository.BindSensorData(getDetailDevice.Device_id, data)
+	if data.Header == 1 {
+		err, _ = s.repository.BindSensorData(getDetailDevice.Device_id, data)
+	} else {
+		err = fmt.Errorf("Data Is Not From Microcontroller")
+	}
 	return data, err
 }
 
@@ -51,13 +53,13 @@ func (s *service) Control(id string, power string, mode string) error {
 	return s.repository.Control(id, power, mode)
 }
 
-func (s *service) PostControlAntares(antares_id string, token string, power string, mode string, ph_cal1 string, ph_cal2 string) error {
+func (s *service) PostControlAntares(antares_id string, token string, power string, mode string) error {
 	if power == "11" {
 		power = "1"
 	} else if power == "10" {
 		power = "0"
 	}
-	return s.repository.PostControlAntares(antares_id, token, power, mode, ph_cal1, ph_cal2)
+	return s.repository.PostControlAntares(antares_id, token, power, mode)
 }
 
 func (s *service) AddDevice(input models.DeviceInput, user_id string) error {
@@ -95,4 +97,8 @@ func (s *service) UpdateDeviceById(up_input models.DeviceInput, device_id string
 
 func (s *service) Calibration(input models.PhCalibration) error {
 	return s.repository.Calibration(input)
+}
+
+func (s *service) PostCalibrationAntares(token string, input models.PhCalibration) error {
+	return s.repository.PostCalibrationAntares(token, input)
 }

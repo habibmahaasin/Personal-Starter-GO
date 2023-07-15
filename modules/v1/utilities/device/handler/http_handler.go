@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,6 @@ func (h *deviceHandler) SubscribeWebhook(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con)
 	Antares_Device_Id := strings.Replace(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Pi, "/antares-cse/cnt-", "", -1)
 	_, err := h.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
 	if err != nil {
@@ -34,23 +32,17 @@ func (h *deviceHandler) Control(c *gin.Context) {
 	page := c.Param("page")
 	id := c.Param("id")
 	mode := c.Param("mode")
-	antares_id := c.Param("antares")
 	power := c.Param("power")
 	token := "f784524323f73064:4c0b580400028426"
+	session := sessions.Default(c)
+	user_id := session.Get("user_id").(string)
 
-	err := h.deviceService.Control(id, power, mode)
+	getData, _ := h.deviceService.GetDeviceById(user_id, id)
+	err := h.deviceService.PostControlAntares(getData.Antares_id, token, power, mode)
+	err = h.deviceService.Control(id, power, mode)
 	if err != nil {
 		fmt.Println(err)
 		return
-	}
-
-	session := sessions.Default(c)
-	user_id := session.Get("user_id").(string)
-	getDeviceById, _ := h.deviceService.GetDeviceById(user_id, id)
-
-	for i := 0; i < 2; i++ {
-		err = h.deviceService.PostControlAntares(antares_id, token, power, mode, getDeviceById.Ph_calibration_firstval, getDeviceById.Ph_calibration_secval)
-		time.Sleep(2 * time.Second)
 	}
 
 	if page == "detail_perangkat" {
@@ -104,21 +96,9 @@ func (h *deviceHandler) EditDevice(c *gin.Context) {
 func (h *deviceHandler) Calibration(c *gin.Context) {
 	var input models.PhCalibration
 	token := "f784524323f73064:4c0b580400028426"
-	session := sessions.Default(c)
-	user_id := session.Get("user_id").(string)
 
 	err := c.ShouldBind(&input)
-	device, _ := h.deviceService.GetDeviceById(user_id, input.Device_id)
-
-	for i := 0; i < 2; i++ {
-		if device.Status_id == "10" {
-			device.Status_id = "0"
-		} else if device.Status_id == "11" {
-			device.Status_id = "1"
-		}
-		err = h.deviceService.PostControlAntares(device.Antares_id, token, device.Status_id, device.Mode_id, input.Ph_calibration_firstval, input.Ph_calibration_secval)
-		time.Sleep(2 * time.Second)
-	}
+	err = h.deviceService.PostCalibrationAntares(token, input)
 
 	err = h.deviceService.Calibration(input)
 	if err != nil {

@@ -33,6 +33,7 @@ type ConnectionDat struct {
 	Dissolved_oxygen        float64 `json:"dissolved_oxygen"`
 	Ph_calibration_firstval float64 `json:"value_ph_k"`
 	Ph_calibration_secval   float64 `json:"value_ph_x"`
+	Ph_adc                  int     `json:"ph_adc"`
 	Device_id               string
 }
 

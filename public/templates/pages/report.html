@@ -14,7 +14,8 @@
                     <th>Mode</th>
                     <th>Temperature</th>
                     <th>pH</th>
-                    <th>Dissolved Oxygen</th>
+                    <th>Adc pH</th>
+                    <th>Maksimum DO</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,10 +24,19 @@
                     <td style="display: none;">{{ .History_date }}</td>
                     <td>{{ .History_date_formatter }}</td>
                     <td>{{ .History_device_name }}</td>
-                    <td>{{ .History_status_name }}</td>
-                    <td>{{ .History_mode_name }}</td>
+                    {{ if eq .History_status_name "Tidak Aktif" }}
+                    <td><span class="status-off-table">Tidak Aktif</span></td>
+                    {{ else }}
+                    <td><span class="status-on-table">Aktif</span></td>
+                    {{ end }}
+                    {{ if eq .History_mode_name "Manual" }}
+                    <td><span class="status-manual-table">Manual</span></td>
+                    {{ else }}
+                    <td><span class="status-auto-table">Otomatis</span></td>
+                    {{ end }}
                     <td>{{ .History_temperature }}</td>
                     <td>{{ .History_ph }}</td>
+                    <td>{{ .History_ph_adc }}</td>
                     <td>{{ .History_dissolved_oxygen }}</td>
                 </tr>
                 {{ end }}

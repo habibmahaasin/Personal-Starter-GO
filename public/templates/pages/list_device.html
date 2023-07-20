@@ -20,7 +20,11 @@
                 {{ range .listDevice }}
                 <tr style="height: 50px; vertical-align: middle;">
                     <td>{{ .Device_name }}</td>
-                    <td>{{ .Mode_name }}</td>
+                    {{ if eq .Mode_name "Manual" }}
+                    <td><span class="status-manual-table">Manual</span></td>
+                    {{ else }}
+                    <td><span class="status-auto-table">Otomatis</span></td>
+                    {{ end }}
                     <td>{{ .Date_updated_formatter }}</td>
                     <td>
                         <div class="switcher">

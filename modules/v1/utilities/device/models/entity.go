@@ -46,5 +46,8 @@ type DeviceHistory struct {
 	History_temperature      float32   `gorm:"column:temperature"`
 	History_dissolved_oxygen float32   `gorm:"column:dissolved_oxygen"`
 	History_date             time.Time `gorm:"column:history_date"`
+	History_ph_firstval      float32   `gorm:"column:ph_calibration_firstval"`
+	History_ph_secval        float32   `gorm:"column:ph_calibration_secval"`
+	History_ph_adc           int       `gorm:"column:ph_adc"`
 	History_date_formatter   string
 }

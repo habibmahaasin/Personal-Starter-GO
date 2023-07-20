@@ -30,12 +30,24 @@
                 <p class="value-data">{{ .latest_temp }} &deg;C</p>
               </div>
               <div class="data-device mb3">
-                <p class="title-data">DO saat Ini</p>
+                <p class="title-data">DO Maksimum Saat Ini</p>
                 <p class="value-data">{{ .latest_do }}</p>
               </div>
               <div class="data-device mb-3">
-                <p class="title-data">Kode Perangkat IOT</p>
-                <p class="value-data">{{ .deviceInfo.Antares_id }}</p>
+                <p class="title-data">Nilai Kalibrasi pH K</p>
+                {{ if eq .deviceInfo.Ph_calibration_firstval ""}}
+                <p class="value-data">Default Value from Device</p>
+                {{ else }}
+                <p class="value-data">{{ .deviceInfo.Ph_calibration_firstval }}</p>
+                {{ end }}
+              </div>
+              <div class="data-device mb-3">
+                <p class="title-data">Nilai Kalibrasi pH X</p>
+                {{ if eq .deviceInfo.Ph_calibration_secval ""}}
+                <p class="value-data">Default Value from Device</p>
+                {{ else }}
+                <p class="value-data">{{ .deviceInfo.Ph_calibration_secval }}</p>
+                {{ end }}
               </div>
             </div>
           </div>
@@ -49,6 +61,10 @@
                 <div class="data-device mb-3">
                     <p class="title-data">Nama Perangkat</p>
                     <p class="value-data">{{ .deviceInfo.Device_name }}</p>
+                </div>
+                <div class="data-device mb-3">
+                  <p class="title-data">Kode Perangkat IOT</p>
+                  <p class="value-data">{{ .deviceInfo.Antares_id }}</p>
                 </div>
                 <div class="data-device mb-3">
                     <p class="title-data">Lokasi Perangkat</p>
@@ -117,7 +133,8 @@
                             <th>History Date</th>
                             <th>Temperature</th>
                             <th>pH</th>
-                            <th>Dissolved Oxygen</th>
+                            <th>Adc pH</th>
+                            <th>Maksimum DO</th>
                             <th>Mode</th>
                             <th>Status Device</th>
                         </tr>
@@ -129,9 +146,18 @@
                             <td>{{ .History_date_formatter }}</td>
                             <td>{{ .History_temperature }}</td>
                             <td>{{ .History_ph }}</td>
+                            <td>{{ .History_ph_adc }}</td>
                             <td>{{ .History_dissolved_oxygen }}</td>
-                            <td>{{ .History_mode_name }}</td>
-                            <td>{{ .History_status_name }}</td>
+                            {{ if eq .History_mode_name "Manual" }}
+                            <td><span class="status-manual-table">Manual</span></td>
+                            {{ else }}
+                            <td><span class="status-auto-table">Otomatis</span></td>
+                            {{ end }}
+                            {{ if eq .History_status_name "Tidak Aktif" }}
+                            <td><span class="status-off-table">Tidak Aktif</span></td>
+                            {{ else }}
+                            <td><span class="status-on-table">Aktif</span></td>
+                            {{ end }}
                         </tr>
                         {{ end }}
                     </tbody>

@@ -11,7 +11,7 @@ import (
 )
 
 func (r *repository) BindSensorData(Device_id string, input models.ConnectionDat) (error, error) {
-	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, history_date) VALUES (?,?,?,?,?,?,?,?,now())", input.Aerator_status, input.Aerator_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, input.Ph_calibration_firstval, input.Ph_calibration_secval).Error
+	err := r.db.Exec("INSERT INTO device_history (status_id, mode_id, device_id, temperature, ph, dissolved_oxygen, ph_calibration_firstval, ph_calibration_secval, ph_adc, history_date) VALUES (?,?,?,?,?,?,?,?,?,now())", input.Aerator_status, input.Aerator_mode, Device_id, input.Temperature, input.Ph, input.Dissolved_oxygen, input.Ph_calibration_firstval, input.Ph_calibration_secval, input.Ph_adc).Error
 	err2 := r.db.Exec("UPDATE devices SET status_id  = ?, mode_id  = ?, ph_calibration_firstval = ?, ph_calibration_secval = ?, date_updated = now() WHERE device_id = ?", input.Aerator_status, input.Aerator_mode, input.Ph_calibration_firstval, input.Ph_calibration_secval, Device_id).Error
 	return err, err2
 }
@@ -31,7 +31,7 @@ func (r *repository) GetDeviceByAntares(antaresDeviceID string) (models.Device, 
 
 func (r *repository) GetDeviceHistory(user_id string) ([]models.DeviceHistory, error) {
 	var DeviceHistory []models.DeviceHistory
-	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.user_id = ? and NOT(dh.dissolved_oxygen = 0) ORDER BY dh.history_id DESC LIMIT 250", user_id).Scan(&DeviceHistory).Error
+	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.ph_adc, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.user_id = ? and NOT(dh.dissolved_oxygen = 0) ORDER BY dh.history_id DESC LIMIT 250", user_id).Scan(&DeviceHistory).Error
 	return DeviceHistory, err
 }
 
@@ -84,7 +84,7 @@ func (r *repository) GetDeviceById(u_id string, d_id string) (models.Device, err
 
 func (r *repository) GetDeviceHistoryById(d_id string, u_id string) ([]models.DeviceHistory, error) {
 	var DeviceHistory []models.DeviceHistory
-	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.device_id = ? and d.user_id = ? and NOT(dh.dissolved_oxygen = 0) ORDER BY dh.history_id DESC", d_id, u_id).Scan(&DeviceHistory).Error
+	err := r.db.Raw("select d.device_id, d.device_name, ds.status_name, dm.mode_name, dh.ph, dh.temperature, dh.dissolved_oxygen, dh.ph_calibration_firstval, dh.ph_calibration_secval, dh.ph_adc, dh.history_date from  device_history dh inner join devices d on dh.device_id = d.device_id inner join device_status ds on dh.status_id = ds.status_id inner join device_mode dm on dh.mode_id = dm.mode_id where d.device_id = ? and d.user_id = ? and NOT(dh.dissolved_oxygen = 0) ORDER BY dh.history_id DESC", d_id, u_id).Scan(&DeviceHistory).Error
 	return DeviceHistory, err
 }
 

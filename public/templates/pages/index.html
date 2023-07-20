@@ -16,10 +16,6 @@
                   <p class="total-number">{{ .total_off }}</p>
                   <p class="aerator-status-off">Aerator Mati</p>
                 </div>
-                <div class="aerator-status d-flex gap-3">
-                  <p class="total-number">0</p>
-                  <p class="aerator-status-error">Aerator Bermasalah</p>
-                </div>
               </div>
             </div>
           </div>
@@ -27,7 +23,7 @@
         <div class="col-12 col-lg-4">
           <div class="card card-middle" style="width: 100%">
             <div class="card-body">
-              <h6 class="card-title">Rata-rata Temperature dari Seluruh Perangkat</h6>
+              <h6 class="card-title">Rata-rata Temperature Semua Perangkat</h6>
               <div class="wrapper-value-card">
                 <h2 class="card-title total-average-number">{{ .average_temp }} &deg;C</h2>
                 <hr class="m-0 pt-1">
@@ -37,7 +33,7 @@
           </div>
           <div class="card card-middle" style="width: 100%">
             <div class="card-body">
-              <h6 class="card-title">Rata - rata pH dari Seluruh Perangkat</h6>
+              <h6 class="card-title">Rata - rata pH Semua Perangkat</h6>
               <div class="wrapper-value-card">
                 <h2 class="card-title total-average-number">{{ .average_ph }}</h2>
                 <hr class="m-0 pt-1">
@@ -120,8 +116,16 @@
                           <td hidden></td>
                           <td>{{ .Device_name }}</td>
                           <td>{{ .Date_updated_formatter }}</td>
-                          <td>{{ .Mode_name }}</td>
-                          <td>{{ .Status_name }}</td>
+                          {{ if eq .Mode_name "Manual" }}
+                          <td><span class="status-manual-table">Manual</span></td>
+                          {{ else }}
+                          <td><span class="status-auto-table">Otomatis</span></td>
+                          {{ end }}
+                          {{ if eq .Status_name "Aktif" }}
+                          <td><span class="status-on-table">Aktif</span></td>
+                          {{ else }}
+                          <td><span class="status-off-table">Tidak Aktif</span></td>
+                          {{ end }}
                         </tr>
                         {{ end }}
                     </tbody>
@@ -133,6 +137,15 @@
       </section>
     </div>
 </div>
+
+<style>
+  h6.card-title{
+    font-size: .9rem;
+  }
+  .row.first-summary .card {
+    height: 287px;
+  }
+</style>
 
 <script>
   var history_data = JSON.parse('{{ .History }}');
@@ -164,7 +177,7 @@
       data: ph.reverse()
     },
     {
-      name: 'Disolved Oxygen',
+      name: 'Maksimum Disolved Oxygen',
       data: dissolved_oxygen.reverse()
     }],
     chart: {

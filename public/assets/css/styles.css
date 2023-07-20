@@ -148,20 +148,38 @@ a.btn-orange:hover {
   padding: 5px 10px;
   font-size: 12px;
 }
-.aerator-status-error {
-  color: #823c00;
-  background-color: #fdf1cb;
-  padding: 5px 10px;
-  font-size: 12px;
+.status-off-table {
+  color: #a91537;
+  background-color: #fde1d5;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.status-on-table {
+  color: #2b6004;
+  background-color: #f1fdcf;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.status-manual-table {
+  color: #155da9;
+  background-color: #d5ddfd;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.status-auto-table {
+  color: #2b6004;
+  background-color: #f1fdcf;
+  padding: 3px 8px;
+  font-size: 11px;
 }
 .row.first-summary .card {
-  height: 340px;
+  height: 410px;
   margin: 10px 0px !important;
   border-radius: 20px;
   border: none;
 }
 .row.first-summary .card.card-middle {
-  height: 160px !important;
+  height: 134px !important;
   margin: 15px 0px !important;
 }
 .main-container {
@@ -205,7 +223,7 @@ svg {
 }
 .total-average-number{
   margin-top: 10px;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #4746BD;
 }

@@ -30,6 +30,7 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	//Routing API Service
 	api := router.Group("/api/v1")
 	api.POST("/webhook", deviceHandlerV1.SubscribeWebhook)
+	api.POST("/device-controll", deviceHandlerV1.APIControlling)
 
 	// Routing Website Service
 	device := router.Group("/")

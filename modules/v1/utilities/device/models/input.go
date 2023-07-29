@@ -84,3 +84,10 @@ type PhCalibration struct {
 	Ph_calibration_firstval string `json:"ph_calibration_firstval" form:"ph_calibration_firstval"`
 	Ph_calibration_secval   string `json:"ph_calibration_secval" form:"ph_calibration_secval"`
 }
+
+type ControllingAPI struct {
+	User_id   string `json:"user_id" form:"user_id" binding:"required"`
+	Device_id string `json:"device_id" form:"device_id" binding:"required"`
+	Mode      string `json:"mode" binding:"required"`
+	Power     string `json:"power" binding:"required"`
+}

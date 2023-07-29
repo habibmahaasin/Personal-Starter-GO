@@ -2,6 +2,7 @@ package handler
 
 import (
 	"GuppyTech/modules/v1/utilities/device/models"
+	api "GuppyTech/pkg/api_response"
 	"GuppyTech/pkg/helpers"
 	"fmt"
 	"log"
@@ -19,7 +20,7 @@ func (h *deviceHandler) SubscribeWebhook(c *gin.Context) {
 		c.JSON(220, response)
 		return
 	}
-
+	fmt.Println("data : ", webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con)
 	Antares_Device_Id := strings.Replace(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Pi, "/antares-cse/cnt-", "", -1)
 	_, err := h.deviceService.GetDatafromWebhook(webhookData.First.M2m_nev.M2m_rep.M2m_cin.Con, Antares_Device_Id)
 	if err != nil {
@@ -106,4 +107,26 @@ func (h *deviceHandler) Calibration(c *gin.Context) {
 		return
 	}
 	c.Redirect(http.StatusFound, "/kalibrasi-sensor")
+}
+
+func (h *deviceHandler) APIControlling(c *gin.Context) {
+	var input models.ControllingAPI
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		response := helpers.APIRespon("Error, Format Input Tidak Sesuai", 220, "error", nil)
+		c.JSON(220, response)
+		return
+	}
+
+	token := "f784524323f73064:4c0b580400028426"
+
+	getData, _ := h.deviceService.GetDeviceById(input.User_id, input.Device_id)
+	err = h.deviceService.PostControlAntares(getData.Antares_id, token, input.Power, input.Mode)
+	err = h.deviceService.Control(input.Device_id, input.Power, input.Mode)
+
+	if err == nil {
+		response := api.APIRespon("Success", 200, "success", input)
+		c.JSON(200, response)
+	}
 }

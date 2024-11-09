@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"GuppyTech/modules/v1/utilities/user/repository"
-	"GuppyTech/modules/v1/utilities/user/service"
-	jwt "GuppyTech/pkg/jwt"
+	"Batumbuah/modules/v1/utilities/user/repository"
+	"Batumbuah/modules/v1/utilities/user/service"
+	jwt "Batumbuah/pkg/jwt"
 
 	"gorm.io/gorm"
 )

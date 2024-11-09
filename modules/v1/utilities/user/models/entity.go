@@ -1,10 +1,14 @@
 package models
 
+import "time"
+
 type User struct {
-	User_id   string `json:"user_id"`
-	Full_name string `json:"full_name"`
-	Email     string `json:"email"`
-	Role_id   int    `json:"role_id"`
-	Password  string `json:"password"`
-	Address   string `json:"address"`
+	UserID      string    `json:"user_id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	RoleID      int       `json:"role_id"`
+	Password    string    `json:"password"`
+	Address     string    `json:"address"`
+	DateCreated time.Time `json:"date_created" gorm:"autoCreateTime"`
+	DateUpdated time.Time `json:"date_updated" gorm:"autoUpdateTime"`
 }

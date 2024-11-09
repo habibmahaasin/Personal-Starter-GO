@@ -1,7 +1,7 @@
 package token
 
 import (
-	"GuppyTech/app/config"
+	"Batumbuah/app/config"
 	"errors"
 	"time"
 

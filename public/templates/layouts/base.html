@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ .title }}</title>
-    <link rel="stylesheet" href="/vendor/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/vendor/css/bootstrap/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
     <link rel="icon" type="image/x-icon" href="/img/ico-gt.ico" />
     {{ if or (eq .title "Login") (eq .title "Page Not Found")}}
-    <link rel="stylesheet" href="/css/login.css">
-    {{ else }} 
-    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/login.css" />
+    {{ else }}
+    <link rel="stylesheet" href="/css/sidebar.css" />
     {{ end }}
-</head>
-{{ if or (eq .title "Login") (eq .title "Page Not Found") }}
-<body>
+  </head>
+  {{ if or (eq .title "Login") (eq .title "Page Not Found") }}
+  <body>
     {{ template "content" .}}
-</body>
-{{ else }}
-{{template "header" .}}
-<body id="body-pd" class="body-pd">
-    <div class="height-100 main-content">
-        {{ template "content" .}}
-    </div>
-    <div id="background"></div>
-</body>
-{{ end }}
-<footer>
-</footer>
-<script src="/js/map-select.js"></script>
-<script src="/vendor/js/bootstrap/bootstrap.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/sidebar.js"></script>
-<script src="/js/script.js"></script>
-<script>
-    document.querySelector('#value-loc').innerText = truncateText('#value-loc', 28);
-    function truncateText(selector, maxLength) {
-    var element = document.querySelector(selector),
-        truncated = element.innerText;
-
-    if (truncated.length > maxLength) {
-        truncated = truncated.substr(0,maxLength) + '...';
-    }
-    return truncated;
-    }
-</script>
+  </body>
+  {{ else }}
+  <body id="body-pd" class="body-pd">
+    {{ template "content" .}}
+  </body>
+  {{ end }}
+  <footer></footer>
+  <script src="/js/map-select.js"></script>
+  <script src="/vendor/js/bootstrap/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/script.js"></script>
 </html>

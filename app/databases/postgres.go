@@ -1,7 +1,8 @@
 package database
 
 import (
-	"GuppyTech/app/config"
+	"Batumbuah/app/config"
+	"Batumbuah/modules/v1/utilities/user/models"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -18,7 +19,7 @@ func Init(conf config.Conf) *gorm.DB {
 	}
 
 	// digunakan untuk auto migrate dari entity ke database
-	// db.AutoMigrate(&models.User{})
+	Db.AutoMigrate(&models.User{})
 
 	return Db
 }

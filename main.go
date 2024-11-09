@@ -1,11 +1,11 @@
 package main
 
 import (
-	"GuppyTech/app/config"
-	database "GuppyTech/app/databases"
-	routesV1 "GuppyTech/modules/v1/routes"
-	"GuppyTech/pkg/html"
-	error "GuppyTech/pkg/http-error"
+	"Batumbuah/app/config"
+	database "Batumbuah/app/databases"
+	routesV1 "Batumbuah/modules/v1/routes"
+	"Batumbuah/pkg/html"
+	error "Batumbuah/pkg/http-error"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -27,7 +27,7 @@ func setup() (*gorm.DB, config.Conf, *gin.Engine) {
 	router.Use(cors.Default())
 
 	cookieStore := cookie.NewStore([]byte(conf.App.Secret_key))
-	router.Use(sessions.Sessions("GuppyTech", cookieStore))
+	router.Use(sessions.Sessions("Batumbuah", cookieStore))
 	router.HTMLRender = html.Render("./public/templates")
 
 	//Error Handling for 404 Not Found Page and Method Not Allowed

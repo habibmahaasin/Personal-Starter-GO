@@ -1,8 +1,8 @@
 package view
 
 import (
-	"GuppyTech/modules/v1/utilities/user/repository"
-	"GuppyTech/modules/v1/utilities/user/service"
+	"Batumbuah/modules/v1/utilities/user/repository"
+	"Batumbuah/modules/v1/utilities/user/service"
 
 	"gorm.io/gorm"
 )

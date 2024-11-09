@@ -1,13 +1,14 @@
 package repository
 
 import (
-	"GuppyTech/modules/v1/utilities/user/models"
+	"Batumbuah/modules/v1/utilities/user/models"
 
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	GetUserByEmail(email string) (models.User, error)
+	CreateUser(user *models.User) error
 }
 
 type repository struct {

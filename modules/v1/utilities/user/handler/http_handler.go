@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"GuppyTech/modules/v1/utilities/user/models"
+	"Batumbuah/modules/v1/utilities/user/models"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,7 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (n *userHandler) Login(c *gin.Context) {
+func (h *userHandler) Register(c *gin.Context) {
+	var input models.RegisterInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Register the user
+	err := h.userService.Register(input.FullName, input.Email, input.Password, input.Address, 2)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
+}
+
+func (h *userHandler) Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var input models.LoginInput
 
@@ -19,7 +37,7 @@ func (n *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := n.userService.Login(input)
+	user, err := h.userService.Login(input)
 	if err != nil {
 		log.Println(err)
 		c.HTML(http.StatusOK, "login.html", gin.H{
@@ -29,12 +47,13 @@ func (n *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, _ := n.jwtoken.GenerateToken(user.User_id, user.Full_name, user.Role_id)
-	c.SetCookie("Token", token, 21600, "/", "guppy.tech", false, true)
+	token, _ := h.jwtoken.GenerateToken(user.UserID, user.FullName, user.RoleID)
+	fmt.Println(token)
+	c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
 
 	session.Set("email", user.Email)
-	session.Set("full_name", user.Full_name)
-	session.Set("user_id", user.User_id)
+	session.Set("full_name", user.FullName)
+	session.Set("user_id", user.UserID)
 	session.Options(sessions.Options{
 		MaxAge: 3600 * 6,
 	})
@@ -43,13 +62,13 @@ func (n *userHandler) Login(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
-func (n *userHandler) Logout(c *gin.Context) {
+func (h *userHandler) Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
 	session.Save()
 
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:   "GuppyTech",
+		Name:   "Batumbuah",
 		MaxAge: -1,
 	})
 

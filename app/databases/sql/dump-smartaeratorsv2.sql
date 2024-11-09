@@ -849,7 +849,7 @@ INSERT INTO public.roles VALUES (1, 'Owner', '2023-06-21 00:17:16.504666');
 INSERT INTO public.users VALUES ('03eb0947-8d83-416e-8ac5-4a595685cf79', 1, 'Public Demo', 'public@guppy.tech', '$2a$12$mA2cnP4HO.3sbEuaXXSU6uq9K0epA0ad6H3/QDXsGZaZGL/dsMrd.
 
 ', 'Bandung', NULL, '2023-06-21 04:00:23.518107', '2023-06-21 04:00:23.518107');
-INSERT INTO public.users VALUES ('a962321c-6b3a-4b92-8a70-9729a1f15b75', 1, 'GuppyTech Admin', 'admin@guppy.tech', '$2a$12$Sdi3bdf/B8HFQ9Vq8cMIZu.OkjLSgUVO4MGqmjD23rSrSYmzTf5K2
+INSERT INTO public.users VALUES ('a962321c-6b3a-4b92-8a70-9729a1f15b75', 1, 'Batumbuah Admin', 'admin@guppy.tech', '$2a$12$Sdi3bdf/B8HFQ9Vq8cMIZu.OkjLSgUVO4MGqmjD23rSrSYmzTf5K2
 ', 'Bandung', NULL, '2023-03-30 05:46:05.620484', '2023-03-30 05:46:05.620484');
 
 

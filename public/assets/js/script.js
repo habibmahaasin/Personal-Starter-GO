@@ -36,7 +36,7 @@ function ControllingFromList(condition) {
 
 function ControllingFromDetail(condition) {
   var conditionSplitter = condition.split('"').join("");
-  var path_id = conditionSplitter.split('/')[1];
+  var path_id = conditionSplitter.split("/")[1];
   Swal.fire({
     title:
       '<span style="font-size: 16px;font-weight: 400;">Apakah Kamu Yakin Ingin Mengubah Kondisi Perangkat?</span>',
@@ -48,7 +48,7 @@ function ControllingFromDetail(condition) {
     if (result.isConfirmed) {
       window.location = "/control/" + conditionSplitter;
     } else if (result.isDenied) {
-      window.location = "/detail-perangkat/"+path_id;
+      window.location = "/detail-perangkat/" + path_id;
     }
   });
 }
@@ -71,7 +71,7 @@ function DeleteDevice(id_perangkat) {
 }
 
 $(document).ready(function () {
-  $("#guppytech-table.report-page").DataTable({
+  $("#Batumbuah-table.report-page").DataTable({
     order: [[0, "desc"]],
     scrollX: true,
     pageLength: 5,
@@ -97,7 +97,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-  $("#guppytech-table.list-device").DataTable({
+  $("#Batumbuah-table.list-device").DataTable({
     order: [[2, "desc"]],
     scrollX: true,
     pageLength: 5,
@@ -121,7 +121,6 @@ $(document).ready(function () {
     },
   });
 });
-
 
 // clock
 var hands = [];

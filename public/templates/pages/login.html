@@ -1,60 +1,46 @@
-{{ define "content" }}
-<div class="login-container">
-  <div class="row justify-content-around">
-    <div class="col-4 banner-login"></div>
-    <div class="col-md-8 col-12">
-      <div
-        class="card-wrapper d-flex justify-content-center align-items-center h-100"
-      >
-        <div class="card login-card" style="width: 400px">
-          <h1>Let's Begin</h1>
-          {{ if eq .message "" }} {{ else }}
-          <div class="alert alert-danger alert-dismissible" role="alert">
-            <div style="font-size: 12px">{{ .message }}</div>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
-          </div>
-          {{ end }}
-          <div class="card-body">
-            <img
-              src="/img/large-logo-gt.svg"
-              alt="Batumbuah-logo"
-              class="mb-5"
-            />
-            <form id="loginPage" method="POST" action="/login">
-              <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  aria-describedby="emailHelp"
-                  placeholder="Masukkan Email Anda"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Masukkan Password Anda"
-                />
-              </div>
-              <button type="submit" class="btn btn-Batumbuah w-100 mt-3">
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
+{{ define "content" }} {{ if .message }}
+  <div class="toastMessage toast toast-top toast-center transition-opacity duration-500">
+    <div class="alert {{ if eq .status "success" }}alert-success{{ else }}alert-error{{ end }}">
+      <span>{{ .message }}</span>
     </div>
   </div>
-</div>
 {{ end }}
+
+
+<div class="card-body flex flex-col justify-between min-h-screen">
+  <div class="w-full flex justify-center">
+    <h1 class="font-bold text-3xl">BATUMBUAH</h1>
+  </div>
+  <form id="loginPage" method="POST" action="/login">
+    <div class="form-control mb-4">
+      <label for="email" class="label">
+        <span class="label-text">Email address</span>
+      </label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Masukkan Email Anda"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <div class="form-control mb-4">
+      <label for="password" class="label">
+        <span class="label-text">Password</span>
+      </label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Masukkan Password Anda"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary w-full mt-3">Login</button>
+  </form>
+  <div class="flex justify-center mt-4">
+    Belum punya akun?
+    <a href="/register" class="link ml-2"> Daftar disini </a>
+  </div>
+  {{ end }}
+</div>

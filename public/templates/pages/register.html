@@ -1,0 +1,79 @@
+{{ define "content" }}
+
+<!-- Display an error alert if there's a message -->
+{{ if .message }}
+<div
+  class="toastMessage toast toast-top toast-center transition-opacity duration-500"
+>
+  <div class="alert alert-error">
+    <span>{{ .message }}</span>
+  </div>
+</div>
+{{ end }}
+
+<div class="card-body flex flex-col justify-between min-h-screen">
+  <div class="w-full flex justify-center">
+    <h1 class="font-bold text-3xl">BATUMBUAH - Register</h1>
+  </div>
+  <form id="registerPage" method="POST" action="/register">
+    <!-- Full Name Field -->
+    <div class="form-control mb-4">
+      <label for="fullName" class="label">
+        <span class="label-text">Full Name</span>
+      </label>
+      <input
+        type="text"
+        id="fullName"
+        name="full_name"
+        placeholder="Masukkan Nama Lengkap Anda"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <!-- Email Field -->
+    <div class="form-control mb-4">
+      <label for="email" class="label">
+        <span class="label-text">Email Address</span>
+      </label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Masukkan Email Anda"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <!-- Password Field -->
+    <div class="form-control mb-4">
+      <label for="password" class="label">
+        <span class="label-text">Password</span>
+      </label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Masukkan Password Anda"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <!-- Address Field (optional) -->
+    <div class="form-control mb-4">
+      <label for="address" class="label">
+        <span class="label-text">Address</span>
+      </label>
+      <input
+        type="text"
+        id="address"
+        name="address"
+        placeholder="Masukkan Alamat Anda (Opsional)"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary w-full mt-3">Register</button>
+  </form>
+  <div class="flex justify-center mt-4">
+    Sudah punya akun?
+    <a href="/login" class="link ml-2"> Login Disini </a>
+  </div>
+</div>
+
+{{ end }}

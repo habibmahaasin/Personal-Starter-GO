@@ -9,23 +9,33 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
-
 func (h *userHandler) Register(c *gin.Context) {
 	var input models.RegisterInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.ShouldBind(&input); err != nil {
+		c.HTML(http.StatusBadRequest, "register.html", gin.H{
+			"title":   "Register",
+			"message": err.Error(),
+		})
 		return
 	}
 
 	// Register the user
 	err := h.userService.Register(input.FullName, input.Email, input.Password, input.Address, 2)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		c.HTML(http.StatusBadRequest, "register.html", gin.H{
+			"title":   "Register",
+			"message": "Galat saat mendaftar user!",
+		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"title":   "Login",
+		"message": "Registration successful, please log in",
+		"status":  "success",
+	})
 }
+
 
 func (h *userHandler) Login(c *gin.Context) {
 	session := sessions.Default(c)
@@ -47,7 +57,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, _ := h.jwtoken.GenerateToken(user.UserID, user.FullName, user.RoleID)
+	token, _ := h.jwtoken.GenerateToken(user.UserID, user.FullName, int(user.RoleID))
 	fmt.Println(token)
 	c.SetCookie("Token", token, 21600, "/", "localhost", false, true)
 

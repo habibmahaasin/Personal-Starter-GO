@@ -44,7 +44,7 @@ func (s *service) Register(fullName, email, password, address string, roleID int
 		Email:    email,
 		Password: string(hashedPassword),
 		Address:  address,
-		RoleID:   roleID,
+		RoleID:   int64(roleID),
 	}
 
 	// Save user to the repository

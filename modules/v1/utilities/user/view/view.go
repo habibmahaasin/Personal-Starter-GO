@@ -1,6 +1,7 @@
 package view
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -18,12 +19,17 @@ func (h *userView) Index(c *gin.Context) {
 	session := sessions.Default(c)
 	email := session.Get("email")
 	name := session.Get("full_name")
+	userID := session.Get("user_id")
+	checkInLogs, _ := h.userService.GetCheckInLogs(userID.(string))
+
+	fmt.Println(checkInLogs)
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":   "Index",
 		// "message": user,
 		"email": email,
 		"name":  name,
+		"checkInLogs":  checkInLogs,
 	})
 }
 

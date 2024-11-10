@@ -11,3 +11,8 @@ type RegisterInput struct {
 	Password string `json:"password" form:"password" binding:"required"`
 	Address  string `json:"address" form:"address"`
 }
+
+type CheckInInput struct {
+	Image string `json:"image" form:"image" binding:"required"`
+	Note  string `json:"note" form:"note"`
+}

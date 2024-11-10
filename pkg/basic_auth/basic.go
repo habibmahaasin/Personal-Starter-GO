@@ -1,7 +1,7 @@
 package basic
 
 import (
-	"GuppyTech/app/config"
+	"Batumbuah/app/config"
 
 	"github.com/gin-gonic/gin"
 )

@@ -35,10 +35,11 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	user.POST("/register", userHandlerV1.Register)
 	user.POST("/login", userHandlerV1.Login)
 	user.GET("/logout", userHandlerV1.Logout)
+	user.POST("/check-in", middlewares.IsLogin(), userHandlerV1.CheckIn)
 
 	user.GET("/login", middlewares.LoggedIn(), userViewV1.Login)
 	user.GET("/", middlewares.IsLogin(), userViewV1.Index)
-	user.GET("/register", userViewV1.Register)
+	// user.GET("/register", userViewV1.Register)
 
 	router = ParseTmpl(router)
 	return router

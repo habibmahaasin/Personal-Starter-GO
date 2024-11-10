@@ -8,6 +8,8 @@ import (
 type Service interface {
 	Login(input models.LoginInput) (models.User, error)
 	Register(fullName, email, password, address string, roleID int) error
+	CheckIn(userID string, image, note string) error
+	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
 }
 
 type service struct {

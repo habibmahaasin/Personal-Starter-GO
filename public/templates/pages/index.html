@@ -1,5 +1,37 @@
 {{ define "content" }}
 <div class="px-4 py-8">
   <h1 class="text-3xl font-bold">Welcome, {{ .name }}</h1>
+
+  <h2>Check-In Logs</h2>
+  <ul>
+    {{ range .checkInLogs }}
+    <li>
+      <strong>Note:</strong> {{ .Note }} <br />
+      <strong>Time:</strong> {{ .DateCreated }} <br />
+    </li>
+    <hr />
+    {{ end }}
+  </ul>
+
+  <!-- Check-In Form -->
+  <form action="/check-in" method="POST" class="mt-6 space-y-4">
+    <!-- Hidden Image Field with Static Value -->
+    <input type="hidden" name="image" value="images.jpeg" />
+
+    <!-- Note Field -->
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text font-semibold">Note</span>
+      </label>
+      <textarea
+        name="note"
+        class="textarea textarea-bordered w-full"
+        placeholder="Enter a note (optional)"
+      ></textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary w-full">Check In</button>
+  </form>
 </div>
 {{ end }}

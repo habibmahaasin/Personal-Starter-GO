@@ -9,11 +9,12 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
+
 func (h *userHandler) Register(c *gin.Context) {
 	var input models.RegisterInput
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "register.html", gin.H{
-			"title":   "Register",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
 			"message": err.Error(),
 		})
 		return
@@ -22,20 +23,18 @@ func (h *userHandler) Register(c *gin.Context) {
 	// Register the user
 	err := h.userService.Register(input.FullName, input.Email, input.Password, input.Address, 2)
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "register.html", gin.H{
-			"title":   "Register",
-			"message": "Galat saat mendaftar user!",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": err.Error(),
 		})
 		return
 	}
 
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"title":   "Login",
-		"message": "Registration successful, please log in",
+	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
+		"message": "Registration successful, please log in",
 	})
 }
-
 
 func (h *userHandler) Login(c *gin.Context) {
 	session := sessions.Default(c)
@@ -83,4 +82,32 @@ func (h *userHandler) Logout(c *gin.Context) {
 	})
 
 	c.Redirect(http.StatusFound, "/login")
+}
+
+func (h *userHandler) CheckIn(c *gin.Context) {
+	session := sessions.Default(c)
+	userID := session.Get("user_id").(string)
+
+	var input models.CheckInInput
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	err := h.userService.CheckIn(userID, input.Image, input.Note)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "Check-in successful",
+	})
 }

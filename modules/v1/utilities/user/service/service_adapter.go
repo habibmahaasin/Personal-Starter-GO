@@ -11,6 +11,7 @@ type Service interface {
 	CheckIn(userID string, image, note string) error
 	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
 	GetUserStats(userID string) (models.UserStats, error)
+	UpdatePreTestStatus(userID string, email string, status bool) error
 }
 
 type service struct {

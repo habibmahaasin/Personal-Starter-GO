@@ -16,3 +16,8 @@ type CheckInInput struct {
 	Image string `json:"image" form:"image" binding:"required"`
 	Note  string `json:"note" form:"note"`
 }
+
+type PreTestStatusInput struct {
+	Email  string `json:"email" form:"email" binding:"required,email"`
+	Status bool   `json:"status" form:"status" binding:"required"`
+}

@@ -13,6 +13,8 @@ type Repository interface {
 	GetLastCheckInTime(userID string) (models.CheckInLog, error)
 	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
 	GetUserStats(userID string) (models.UserStats, error)
+	UpdateUserStats(userID string, userStats models.UserStats) error
+	UpdateTestInformation(testInformation models.TestInformation) error
 }
 
 type repository struct {

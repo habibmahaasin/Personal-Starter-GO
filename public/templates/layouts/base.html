@@ -53,5 +53,16 @@
         toast.classList.add("hidden");
       });
     }, 2000);
+
+    function showForm(event) {
+      event.preventDefault();
+      const link = document.getElementById("proceed-link");
+      link.style.display = "none";
+
+      const formContainer = document.getElementById("form-container");
+      formContainer.classList.remove("hidden");
+
+      window.open("https://forms.gle/1jiPg6QsTpWdDsbd8", "_blank");
+    }
   </script>
 </html>

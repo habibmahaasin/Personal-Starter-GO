@@ -14,6 +14,7 @@ type User struct {
     DateUpdated time.Time     `gorm:"column:date_updated"`
     CheckInLogs []CheckInLog  `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE;"`
     UserStats   UserStats     `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE;"`
+    TestInformation TestInformation `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE;"`
 }
 
 type CheckInLog struct {
@@ -34,4 +35,9 @@ type UserStats struct {
     IsRedeemedReward bool      `json:"is_redeemed_reward"`
     DateCreated      time.Time `json:"date_created"`
     DateUpdated      time.Time `json:"date_updated"`
+}
+
+type TestInformation struct {
+    UserID           string    `gorm:"primaryKey;column:user_id"`
+    Email       string    `gorm:"column:email" json:"email"`
 }

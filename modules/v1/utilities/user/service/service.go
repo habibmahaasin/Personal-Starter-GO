@@ -84,3 +84,25 @@ func (s *service) GetCheckInLogs(userID string) ([]models.CheckInLog, error) {
 func (s *service) GetUserStats(userID string) (models.UserStats, error) {
 	return s.repository.GetUserStats(userID)
 }
+
+func (s *service) UpdatePreTestStatus(userID string, email string, status bool) error {
+	err := s.repository.UpdateTestInformation(models.TestInformation{
+		UserID: userID,
+		Email:  email,
+	})
+	
+	if err != nil {
+		return fmt.Errorf("failed to create test information: %w", err)
+	}
+
+	err = s.repository.UpdateUserStats(userID, models.UserStats{
+		UserID:      userID,
+		IsPreTested: status,
+		DateUpdated: time.Now(),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update user stats: %w", err)
+	}
+
+	return nil
+}

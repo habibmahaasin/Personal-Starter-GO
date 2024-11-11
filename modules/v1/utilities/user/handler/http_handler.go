@@ -106,3 +106,27 @@ func (h *userHandler) CheckIn(c *gin.Context) {
     helpers.SetFlashMessage(c, "success", "Check-in successful")
     c.Redirect(http.StatusFound, "/")
 }
+
+func (h *userHandler) UpdatePreTestStatus(c *gin.Context) {
+	session := sessions.Default(c)
+	userID := session.Get("user_id").(string)
+
+	var input models.PreTestStatusInput
+	if err := c.ShouldBind(&input); err != nil {
+		fmt.Println("err1",err)
+		helpers.SetFlashMessage(c, "error", err.Error())
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+
+	err := h.userService.UpdatePreTestStatus(userID, input.Email, input.Status)
+	if err != nil {
+		fmt.Println("err2",err)
+		helpers.SetFlashMessage(c, "error", err.Error())
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+
+	helpers.SetFlashMessage(c, "success", "Kondisi Pre-Test Berhasil Diajukan")
+	c.Redirect(http.StatusFound, "/")
+}

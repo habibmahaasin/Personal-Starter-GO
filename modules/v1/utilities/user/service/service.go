@@ -80,3 +80,7 @@ func (s *service) CheckIn(userID, image, note string) error {
 func (s *service) GetCheckInLogs(userID string) ([]models.CheckInLog, error) {
 	return s.repository.GetCheckInLogs(userID)
 }
+
+func (s *service) GetUserStats(userID string) (models.UserStats, error) {
+	return s.repository.GetUserStats(userID)
+}

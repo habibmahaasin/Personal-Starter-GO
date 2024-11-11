@@ -12,6 +12,7 @@ type Repository interface {
 	UserCheckIn(userID, image, note string) error
 	GetLastCheckInTime(userID string) (models.CheckInLog, error)
 	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
+	GetUserStats(userID string) (models.UserStats, error)
 }
 
 type repository struct {

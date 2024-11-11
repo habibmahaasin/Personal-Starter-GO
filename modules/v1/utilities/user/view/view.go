@@ -1,7 +1,7 @@
 package view
 
 import (
-	"fmt"
+	"Batumbuah/pkg/helpers"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -16,21 +16,23 @@ func (h *userView) Login(c *gin.Context) {
 }
 
 func (h *userView) Index(c *gin.Context) {
-	session := sessions.Default(c)
-	email := session.Get("email")
-	name := session.Get("full_name")
-	userID := session.Get("user_id")
-	checkInLogs, _ := h.userService.GetCheckInLogs(userID.(string))
+    session := sessions.Default(c)
+    email := session.Get("email")
+    name := session.Get("full_name")
+    userID := session.Get("user_id")
+    checkInLogs, _ := h.userService.GetCheckInLogs(userID.(string))
+    userStats, _ := h.userService.GetUserStats(userID.(string))
+    status, message := helpers.GetAndClearFlashMessage(c)
 
-	fmt.Println(checkInLogs)
-
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title":   "Index",
-		// "message": user,
-		"email": email,
-		"name":  name,
-		"checkInLogs":  checkInLogs,
-	})
+    c.HTML(http.StatusOK, "index.html", gin.H{
+        "title":       "Index",
+        "status":      status,
+        "message":     message,
+        "email":       email,
+        "name":        name,
+        "checkInLogs": checkInLogs,
+        "userStats":   userStats,
+    })
 }
 
 func (h *userView) Register(c *gin.Context) {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"Batumbuah/modules/v1/utilities/user/models"
+	"Batumbuah/pkg/helpers"
 	"fmt"
 	"log"
 	"net/http"
@@ -85,29 +86,23 @@ func (h *userHandler) Logout(c *gin.Context) {
 }
 
 func (h *userHandler) CheckIn(c *gin.Context) {
-	session := sessions.Default(c)
-	userID := session.Get("user_id").(string)
+    session := sessions.Default(c)
+    userID := session.Get("user_id").(string)
 
-	var input models.CheckInInput
-	if err := c.ShouldBind(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "error",
-			"message": err.Error(),
-		})
-		return
-	}
+    var input models.CheckInInput
+    if err := c.ShouldBind(&input); err != nil {
+        helpers.SetFlashMessage(c, "error", err.Error())
+        c.Redirect(http.StatusFound, "/")
+        return
+    }
 
-	err := h.userService.CheckIn(userID, input.Image, input.Note)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "error",
-			"message": err.Error(),
-		})
-		return
-	}
+    err := h.userService.CheckIn(userID, input.Image, input.Note)
+    if err != nil {
+        helpers.SetFlashMessage(c, "error", err.Error())
+        c.Redirect(http.StatusFound, "/")
+        return
+    }
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "success",
-		"message": "Check-in successful",
-	})
+    helpers.SetFlashMessage(c, "success", "Check-in successful")
+    c.Redirect(http.StatusFound, "/")
 }

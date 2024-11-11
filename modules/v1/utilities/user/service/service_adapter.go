@@ -10,6 +10,7 @@ type Service interface {
 	Register(fullName, email, password, address string, roleID int) error
 	CheckIn(userID string, image, note string) error
 	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
+	GetUserStats(userID string) (models.UserStats, error)
 }
 
 type service struct {

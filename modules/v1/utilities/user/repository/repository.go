@@ -49,17 +49,19 @@ func (r *repository) UserCheckIn(userID, image, note string) error {
             DateCreated: time.Now(),
             DateUpdated: time.Now(),
         }
+        // Create a new check-in log
         if err := tx.Create(&checkInLog).Error; err != nil {
             return err
         }
 
-        var userStats models.UserStats
-        if err := tx.Where("user_id = ?", userID).First(&userStats).Error; err != nil {
+        // Count the total check-in logs for the user
+        var checkInCount int64
+        if err := tx.Model(&models.CheckInLog{}).Where("user_id = ?", userID).Count(&checkInCount).Error; err != nil {
             return err
         }
 
-        userStats.TotalCheckIn++
-        if err := tx.Save(&userStats).Error; err != nil {
+        // Update the user's stats with the count of check-ins
+        if err := tx.Model(&models.UserStats{}).Where("user_id = ?", userID).Update("total_check_in", checkInCount).Error; err != nil {
             return err
         }
 
@@ -85,4 +87,10 @@ func (r *repository) GetCheckInLogs(userID string) ([]models.CheckInLog, error) 
     var checkInLogs []models.CheckInLog
     err := r.db.Where("user_id = ?", userID).Find(&checkInLogs).Error
     return checkInLogs, err
+}
+
+func (r *repository) GetUserStats(userID string) (models.UserStats, error) {
+    var userStats models.UserStats
+    err := r.db.Where("user_id = ?", userID).First(&userStats).Error
+    return userStats, err
 }

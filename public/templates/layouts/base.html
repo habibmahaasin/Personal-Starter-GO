@@ -27,7 +27,7 @@
     <div
       class="container mx-auto max-w-md bg-white min-h-[100vh] overflow-x-none"
     >
-      {{ template "content" . }}
+      {{ template "content" . }} {{ template "navigation" . }}
     </div>
   </body>
 
@@ -37,20 +37,20 @@
       Array.from(toastMessages).forEach((toast) => {
         toast.classList.add("opacity-0");
       });
-    }, 500);
+    }, 1000);
 
     setTimeout(() => {
       const toastMessages = document.getElementsByClassName("toastMessage");
       Array.from(toastMessages).forEach((toast) => {
         toast.classList.add("invisible");
       });
-    }, 1000);
+    }, 1500);
 
     setTimeout(() => {
       const toastMessages = document.getElementsByClassName("toastMessage");
       Array.from(toastMessages).forEach((toast) => {
         toast.classList.add("hidden");
       });
-    }, 1500);
+    }, 2000);
   </script>
 </html>

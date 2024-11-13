@@ -8,10 +8,12 @@ import (
 type Service interface {
 	Login(input models.LoginInput) (models.User, error)
 	Register(fullName, email, password, address string, roleID int) error
-	CheckIn(userID string, image, note string) error
-	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
-	GetUserStats(userID string) (models.UserStats, error)
-	UpdatePreTestStatus(userID string, email string, status bool) error
+	RegisterPlant(userID, name, email string) error
+	GetPlantByUserID(userID string) ([]models.UserPlant, error)
+	GetPlantByID(plantID string) (models.UserPlant, error)
+	CheckIn(userID, plantID, image, note string) error 
+	GetCheckInLogs(UserPlantID string) ([]models.CheckInLog, error)
+	GetPlantStatsById(plantID string) (models.PlantStats, error)
 }
 
 type service struct {

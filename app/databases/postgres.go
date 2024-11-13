@@ -20,8 +20,9 @@ func Init(conf config.Conf) *gorm.DB {
 
 	// digunakan untuk auto migrate dari entity ke database
 	Db.AutoMigrate(&models.User{})
-	Db.AutoMigrate(&models.CheckInLog{})
-	Db.AutoMigrate(&models.UserStats{})
+	Db.AutoMigrate(&models.UserPlant{})
+	Db.AutoMigrate(&models.PlantStats{})
 	Db.AutoMigrate(&models.TestInformation{})
+	Db.AutoMigrate(&models.CheckInLog{})
 	return Db
 }

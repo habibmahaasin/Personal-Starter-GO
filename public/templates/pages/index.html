@@ -8,97 +8,43 @@
   </div>
 {{ end }}
 
-{{ if .userStats.IsPreTested }}
-{{ else }}
-<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-  <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4" id="proceed-link">
-          <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:text-left">
-              <h3 class="text-base font-semibold text-gray-900" id="modal-title">Pre-Test Confirmation</h3>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">Are you sure you want to proceed with the pre-test? All your responses will be recorded. This action cannot be undone.</p>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 py-3 sm:flex sm:flex-row-reverse">
-            <button class="btn btn-primary w-full" onclick="showForm(event)">Proceed with Pre-Test</button>
-          </div>
-        </div>
-         <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 hidden" id="form-container">
-          <div class="sm:flex sm:items-start">
-            <div class="mt-3 text-center sm:mt-0 sm:text-left">
-              <h3 class="text-base font-semibold text-gray-900" id="modal-title">Pre-Test Confirmation</h3>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">To proceed with the pre-test, please provide your email address. This will be used to record your responses in the pre-test form.</p>
-              </div>
-            </div>
-          </div>
-          <form action="/pretest-confirmation" method="POST" class="py-3 flex flex-col gap-2 mt-2">
-              <label for="user_input" class="text-sm font-semibold">Email</label>
-              <input type="email" name="email" id="email" placeholder="Enter your response" class="w-full p-2 border rounded">
-              <input type="hidden" name="status" value="true">
-              <button type="submit" class="btn btn-primary w-full mt-2">Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{{ end }}
-
-
-<div class="px-4 py-8">
+<div class="px-4 py-8 relative min-h-screen">
   <h1 class="text-3xl font-bold">Welcome, {{ .name }}</h1>
 
-<div class="flex flex-col gap-4 mt-4">
-    <div>
-    <h2>User Stats</h2>
-    <ul>
-      <li>
-        <strong>Note:</strong> {{ .userStats.TotalCheckIn }} <br />
-        <strong>Time:</strong> {{ .userStats.DateUpdated }} <br />
-      </li>
-      <hr />
-    </ul>
-  </div>
-
-  <div>
-    <h2>Check-In Logs</h2>
-    <ul>
-      {{ range .checkInLogs }}
-      <li>
-        <strong>Note:</strong> {{ .Note }} <br />
-        <strong>Time:</strong> {{ .DateCreated }} <br />
-      </li>
-      <hr />
+  <div class="mt-8">
+    <h2 class="text-xl font-bold">Plant Lists</h2>
+    <hr class="my-4"/>
+    <div class="grid grid-cols-2 gap-2">
+      {{ range .plantLists }}
+      <a href="/plant/{{ .PlantID}}" class="card bg-base-100 w-full shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">
+            {{ .Name }}
+          </h2>
+        </div>
+      </a>
       {{ end }}
-    </ul>
-  </div>
-</div>
-
-  <!-- Check-In Form -->
-  <form action="/check-in" method="POST" class="mt-6 space-y-4">
-    <!-- Hidden Image Field with Static Value -->
-    <input type="hidden" name="image" value="images.jpeg" />
-
-    <!-- Note Field -->
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text font-semibold">Note</span>
-      </label>
-      <textarea
-        name="note"
-        class="textarea textarea-bordered w-full"
-        placeholder="Enter a note (optional)"
-      ></textarea>
     </div>
+  </div>
 
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-primary w-full">Check In</button>
-  </form>
-</div>
+  <button class="btn btn-primary absolute bottom-20 right-4" onclick="my_modal_1.showModal()">+</button>
+  <dialog id="my_modal_1" class="modal">
+    <div class="modal-box max-w-sm">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+      <form method="post" action="/register-plant">
+        <label class="form-control w-full">
+          <div class="label">
+            <span class="label-text">What is your name?</span>
+          </div>
+          <input type="text" name="name" id="name" placeholder="Type here" class="input input-bordered w-full" />
+        </label>
+        <div class="modal-action">
+          <button class="btn btn-primary w-full" type="submit" >Submit</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  </div>
 {{ end }}

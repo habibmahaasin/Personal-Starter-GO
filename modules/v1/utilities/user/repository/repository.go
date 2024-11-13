@@ -20,26 +20,24 @@ func (r *repository) CreateUser(user *models.User) error {
         if err := tx.Create(user).Error; err != nil {
             return err
         }
+        return nil
+    })
+}
 
-        userStats := models.UserStats{
-            UserID:           user.UserID,
-            TotalCheckIn:     0,
-            IsPreTested:      false,
-            IsPostTested:     false,
-            IsRedeemedReward: false,
-			IsAvailableToRedeem: false,
-            DateCreated:      time.Now(),
-            DateUpdated:      time.Now(),
-        }
-        if err := tx.Create(&userStats).Error; err != nil {
+func (r *repository) RegisterPlant(plant *models.UserPlant, plantStats *models.PlantStats, testInfo *models.TestInformation) error {
+    return r.db.Transaction(func(tx *gorm.DB) error {
+        if err := tx.Create(plant).Error; err != nil {
             return err
         }
 
-        TestInformation := models.TestInformation{
-            UserID: user.UserID,
-            Email: user.Email,
+        plantStats.PlantID = plant.PlantID
+        testInfo.PlantID = plant.PlantID
+
+        if err := tx.Create(plantStats).Error; err != nil {
+            return err
         }
-        if err := tx.Create(&TestInformation).Error; err != nil {
+
+        if err := tx.Create(testInfo).Error; err != nil {
             return err
         }
 
@@ -47,11 +45,34 @@ func (r *repository) CreateUser(user *models.User) error {
     })
 }
 
+func (r *repository) GetPlantByUserID(userID string) ([]models.UserPlant, error) {
+    var userPlant []models.UserPlant
+    err := r.db.Where("user_id = ?", userID).Find(&userPlant).Error
+    return userPlant, err
+}
 
-func (r *repository) UserCheckIn(userID, image, note string) error {
+func (r *repository) GetPlantByID(plantID string) (models.UserPlant, error) {
+    var userPlant models.UserPlant
+    err := r.db.Where("plant_id = ?", plantID).First(&userPlant).Error
+    return userPlant, err
+}
+
+func (r *repository) PlantCheckIn(UserPlantID, image, note string) error {
+    var userPlantExists bool
+    if err := r.db.Model(&models.UserPlant{}).
+        Where("plant_id = ?", UserPlantID).
+        Select("count(*) > 0").
+        Scan(&userPlantExists).Error; err != nil {
+        return err
+    }
+
+    if !userPlantExists {
+        return errors.New("UserPlantID not found")
+    }
+
     return r.db.Transaction(func(tx *gorm.DB) error {
         checkInLog := models.CheckInLog{
-            UserID:      userID,
+            UserPlantID: UserPlantID,
             Image:       image,
             Note:        note,
             DateCreated: time.Now(),
@@ -63,11 +84,15 @@ func (r *repository) UserCheckIn(userID, image, note string) error {
         }
 
         var checkInCount int64
-        if err := tx.Model(&models.CheckInLog{}).Where("user_id = ?", userID).Count(&checkInCount).Error; err != nil {
+        if err := tx.Model(&models.CheckInLog{}).
+            Where("plant_id = ?", UserPlantID).
+            Count(&checkInCount).Error; err != nil {
             return err
         }
 
-        if err := tx.Model(&models.UserStats{}).Where("user_id = ?", userID).Update("total_check_in", checkInCount).Error; err != nil {
+        if err := tx.Model(&models.PlantStats{}).
+            Where("plant_id = ?", UserPlantID).
+            Update("total_check_in", checkInCount).Error; err != nil {
             return err
         }
 
@@ -75,36 +100,31 @@ func (r *repository) UserCheckIn(userID, image, note string) error {
     })
 }
 
-func (r *repository) GetLastCheckInTime(userID string) (models.CheckInLog, error) {
-	var checkInLog models.CheckInLog
-	err := r.db.Where("user_id = ?", userID).Order("date_created desc").First(&checkInLog).Error
-	
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return checkInLog, errors.New("no check-in found for the user")
+func (r *repository) GetLastCheckInTime(plantID string) (models.CheckInLog, error) {
+    var checkInLog models.CheckInLog
+    if plantID == "" {
+        return checkInLog, errors.New("plant ID cannot be empty")
+    }
 
-		}
-		return checkInLog, err
-	}
-	return checkInLog, nil
+    err := r.db.Where("plant_id = ?", plantID).Order("date_created desc").First(&checkInLog).Error
+
+    if err != nil {
+        if errors.Is(err, gorm.ErrRecordNotFound) {
+            return checkInLog, errors.New("no check-in found for the plant")
+        }
+        return checkInLog, err
+    }
+    return checkInLog, nil
 }
 
-func (r *repository) GetCheckInLogs(userID string) ([]models.CheckInLog, error) {
+func (r *repository) GetCheckInLogs(UserPlantID string) ([]models.CheckInLog, error) {
     var checkInLogs []models.CheckInLog
-    err := r.db.Where("user_id = ?", userID).Find(&checkInLogs).Error
+    err := r.db.Where("plant_id = ?", UserPlantID).Find(&checkInLogs).Error
     return checkInLogs, err
 }
 
-func (r *repository) GetUserStats(userID string) (models.UserStats, error) {
-    var userStats models.UserStats
-    err := r.db.Where("user_id = ?", userID).First(&userStats).Error
-    return userStats, err
-}
-
-func (r *repository) UpdateUserStats(userID string, userStats models.UserStats) error {
-    return r.db.Model(&models.UserStats{}).Where("user_id = ?", userID).Updates(userStats).Error
-}
-
-func (r *repository) UpdateTestInformation(testInformation models.TestInformation) error {
-    return r.db.Model(&models.TestInformation{}).Where("user_id = ?", testInformation.UserID).Updates(testInformation).Error
+func (r *repository) GetPlantStatsById(plantID string) (models.PlantStats, error) {
+    var plantStats models.PlantStats
+    err := r.db.Where("plant_id = ?", plantID).First(&plantStats).Error
+    return plantStats, err
 }

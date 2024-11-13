@@ -21,3 +21,7 @@ type PreTestStatusInput struct {
 	Email  string `json:"email" form:"email" binding:"required,email"`
 	Status bool   `json:"status" form:"status" binding:"required"`
 }
+
+type RegisterPlantInput struct {
+	Name string `json:"name" form:"name" binding:"required"`
+}

@@ -35,11 +35,13 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	user.POST("/register", userHandlerV1.Register)
 	user.POST("/login", userHandlerV1.Login)
 	user.GET("/logout", userHandlerV1.Logout)
-	user.POST("/check-in", middlewares.IsLogin(), userHandlerV1.CheckIn)
-	user.POST("/pretest-confirmation", middlewares.IsLogin(), userHandlerV1.UpdatePreTestStatus)
+	user.POST("/register-plant", middlewares.IsLogin(), userHandlerV1.RegisterPlant)
+	user.POST("/check-in/:id", middlewares.IsLogin(), userHandlerV1.CheckIn)
+	// user.POST("/pretest-confirmation", middlewares.IsLogin(), userHandlerV1.UpdatePreTestStatus)
 
 	user.GET("/login", middlewares.LoggedIn(), userViewV1.Login)
 	user.GET("/", middlewares.IsLogin(), userViewV1.Index)
+	user.GET("/plant/:id", middlewares.IsLogin(), userViewV1.PlantDetail)
 	// user.GET("/register", userViewV1.Register)
 
 	router = ParseTmpl(router)

@@ -9,12 +9,13 @@ import (
 type Repository interface {
 	GetUserByEmail(email string) (models.User, error)
 	CreateUser(user *models.User) error
-	UserCheckIn(userID, image, note string) error
-	GetLastCheckInTime(userID string) (models.CheckInLog, error)
-	GetCheckInLogs(userID string) ([]models.CheckInLog, error)
-	GetUserStats(userID string) (models.UserStats, error)
-	UpdateUserStats(userID string, userStats models.UserStats) error
-	UpdateTestInformation(testInformation models.TestInformation) error
+	RegisterPlant(plant *models.UserPlant, plantStats *models.PlantStats, testInfo *models.TestInformation) error
+	GetPlantByUserID(userID string) ([]models.UserPlant, error)
+	GetPlantByID(plantID string) (models.UserPlant, error)
+	PlantCheckIn(UserPlantID, image, note string) error
+	GetLastCheckInTime(UserPlantID string) (models.CheckInLog, error)
+	GetCheckInLogs(UserPlantID string) ([]models.CheckInLog, error)
+	GetPlantStatsById(plantID string) (models.PlantStats, error)
 }
 
 type repository struct {

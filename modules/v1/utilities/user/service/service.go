@@ -38,16 +38,12 @@ func (s *service) Register(fullName, email, password, address string, roleID int
 		return errors.New("email already exists")
 	}
 
-	// Generate a unique user ID
 	userID := uuid.New().String()
-
-	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	// Create the user model
 	user := &models.User{
 		UserID:   userID,
 		FullName: fullName,
@@ -55,54 +51,106 @@ func (s *service) Register(fullName, email, password, address string, roleID int
 		Password: string(hashedPassword),
 		Address:  address,
 		RoleID:   int64(roleID),
+		DateCreated:        time.Now(),
+        DateUpdated:        time.Now(),
 	}
 
-	// Save user to the repository
 	return s.repository.CreateUser(user)
 }
 
-func (s *service) CheckIn(userID, image, note string) error {
-	lastCheckIn, err := s.repository.GetLastCheckInTime(userID)
-	if err != nil {
-		if err.Error() == "no check-in found for the user" {
-			return s.repository.UserCheckIn(userID, image, note)
-		}
-		return err
-	}
+func (s *service) RegisterPlant(userID, name, email string) error {
+    userPlant := &models.UserPlant{
+        UserID:  userID,
+        PlantID: uuid.New().String(),
+        Name:    name,
+        DateCreated: time.Now(),
+        DateUpdated: time.Now(),
+    }
 
-	if time.Since(lastCheckIn.DateCreated) < 7*24*time.Hour {
-		return errors.New("check-in allowed only once every 7 days")
-	}
+    plantStats := &models.PlantStats{
+        PlantID:            userPlant.PlantID,
+        TotalCheckIn:       0,
+        IsPreTested:        false,
+        IsPostTested:       false,
+        IsAvailableToRedeem: false,
+        IsRedeemedReward:   false,
+        DateCreated:        time.Now(),
+        DateUpdated:        time.Now(),
+    }
 
-	return s.repository.UserCheckIn(userID, image, note)
+    testInfo := &models.TestInformation{
+        PlantID:    userPlant.PlantID,
+        Email:      email,
+        DateCreated: time.Now(),
+        DateUpdated: time.Now(),
+    }
+
+    return s.repository.RegisterPlant(userPlant, plantStats, testInfo)
 }
 
-func (s *service) GetCheckInLogs(userID string) ([]models.CheckInLog, error) {
-	return s.repository.GetCheckInLogs(userID)
+func (s *service) GetPlantByUserID(userID string) ([]models.UserPlant, error) {
+	return s.repository.GetPlantByUserID(userID)
 }
 
-func (s *service) GetUserStats(userID string) (models.UserStats, error) {
-	return s.repository.GetUserStats(userID)
+func (s *service) GetPlantByID(plantID string) (models.UserPlant, error) {
+	return s.repository.GetPlantByID(plantID)
 }
 
-func (s *service) UpdatePreTestStatus(userID string, email string, status bool) error {
-	err := s.repository.UpdateTestInformation(models.TestInformation{
-		UserID: userID,
-		Email:  email,
-	})
+func (s *service) PlantCheckIn(UserPlantID, image, note string) error {
+	return s.repository.PlantCheckIn(UserPlantID, image, note)
+}
+
+func (s *service) CheckIn(userID, plantID, image, note string) error {
+    if plantID == "" {
+        return errors.New("plant ID cannot be empty")
+    }
+
+    lastCheckIn, err := s.repository.GetLastCheckInTime(plantID)
+    if err != nil {
+        if err.Error() == "no check-in found for the plant" {
+            return s.repository.PlantCheckIn(plantID, image, note)
+        }
+        return err 
+    }
 	
-	if err != nil {
-		return fmt.Errorf("failed to create test information: %w", err)
-	}
+    if time.Since(lastCheckIn.DateCreated) < 7*24*time.Hour {
+        return errors.New("check-in allowed only once every 7 days")
+    }
 
-	err = s.repository.UpdateUserStats(userID, models.UserStats{
-		UserID:      userID,
-		IsPreTested: status,
-		DateUpdated: time.Now(),
-	})
-	if err != nil {
-		return fmt.Errorf("failed to update user stats: %w", err)
-	}
-
-	return nil
+    return s.repository.PlantCheckIn(plantID, image, note)
 }
+
+
+func (s *service) GetCheckInLogs(UserPlantID string) ([]models.CheckInLog, error) {
+	return s.repository.GetCheckInLogs(UserPlantID)
+}
+
+func (s *service) GetPlantStatsById(plantID string) (models.PlantStats, error) {
+	return s.repository.GetPlantStatsById(plantID)
+}
+
+// func (s *service) GetUserStats(userID string) (models.UserStats, error) {
+// 	return s.repository.GetUserStats(userID)
+// }
+
+// func (s *service) UpdatePreTestStatus(userID string, email string, status bool) error {
+// 	err := s.repository.UpdateTestInformation(models.TestInformation{
+// 		UserID: userID,
+// 		Email:  email,
+// 	})
+	
+// 	if err != nil {
+// 		return fmt.Errorf("failed to create test information: %w", err)
+// 	}
+
+// 	err = s.repository.UpdateUserStats(userID, models.UserStats{
+// 		UserID:      userID,
+// 		IsPreTested: status,
+// 		DateUpdated: time.Now(),
+// 	})
+// 	if err != nil {
+// 		return fmt.Errorf("failed to update user stats: %w", err)
+// 	}
+
+// 	return nil
+// }

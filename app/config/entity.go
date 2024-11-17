@@ -14,6 +14,7 @@ type Db struct {
 	User string `env:"DB_USER"`
 	Pass string `env:"DB_PASSWORD"`
 	Port string `env:"DB_PORT"`
+	Type string `env:"DB_TYPE"`
 }
 type BasicAuth struct {
 	Username string `env:"BASIC_AUTH_USER"`

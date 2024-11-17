@@ -26,7 +26,6 @@ func Init(db *gorm.DB, conf config.Conf, router *gin.Engine) *gin.Engine {
 	api := router.Group("/api/v1")
 	api.POST("/register", userHandlerV1.Register)
 	api.POST("/login", userHandlerV1.Login)
-	api.GET("/logout", userHandlerV1.Logout)
 
 	// Routing View
 	view := router.Group("/")

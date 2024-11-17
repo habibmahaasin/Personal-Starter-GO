@@ -1,7 +1,7 @@
 package token
 
 import (
-	"Batumbuah/app/config"
+	"Go_Starter/app/config"
 	"errors"
 	"time"
 

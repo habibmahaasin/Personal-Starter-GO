@@ -1,8 +1,8 @@
 package view
 
 import (
-	"Batumbuah/modules/v1/utilities/user/repository"
-	"Batumbuah/modules/v1/utilities/user/service"
+	"Go_Starter/modules/v1/utilities/user/repository"
+	"Go_Starter/modules/v1/utilities/user/service"
 
 	"gorm.io/gorm"
 )

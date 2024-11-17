@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"Batumbuah/modules/v1/utilities/user/models"
-	"Batumbuah/pkg/helpers"
+	"Go_Starter/modules/v1/utilities/user/models"
 	"fmt"
 	"log"
 	"net/http"
@@ -78,73 +77,9 @@ func (h *userHandler) Logout(c *gin.Context) {
 	session.Save()
 
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:   "Batumbuah",
+		Name:   "Go_Starter",
 		MaxAge: -1,
 	})
 
 	c.Redirect(http.StatusFound, "/login")
-}
-
-func (h *userHandler) RegisterPlant(c *gin.Context) {
-	session := sessions.Default(c)
-	userID := session.Get("user_id").(string)
-	email := session.Get("email").(string)
-
-	var input models.RegisterPlantInput
-	if err := c.ShouldBind(&input); err != nil {
-		helpers.SetFlashMessage(c, "error", err.Error())
-        c.Redirect(http.StatusFound, "/")
-		return
-	}
-
-	err := h.userService.RegisterPlant(userID, input.Name, email)
-	if err != nil {
-		helpers.SetFlashMessage(c, "error", err.Error())
-        c.Redirect(http.StatusFound, "/")
-		return
-	}
-
-	helpers.SetFlashMessage(c, "success", "Check-in successful")
-    c.Redirect(http.StatusFound, "/")
-}
-
-func (h *userHandler) GetPlantByUserID(c *gin.Context) {
-	session := sessions.Default(c)
-	userID := session.Get("user_id").(string)
-
-	plants, err := h.userService.GetPlantByUserID(userID)
-	if err != nil {
-		helpers.SetFlashMessage(c, "error", err.Error())
-		c.Redirect(http.StatusFound, "/")
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status": "success",
-		"data":   plants,
-	})
-}
-
-func (h *userHandler) CheckIn(c *gin.Context) {
-    session := sessions.Default(c)
-    userID := session.Get("user_id").(string)
-
-    plantID := c.Param("id")
-
-    var input models.CheckInInput
-    if err := c.ShouldBind(&input); err != nil {
-        helpers.SetFlashMessage(c, "error", err.Error())
-        c.Redirect(http.StatusFound, "/plant/" + plantID)
-        return
-    }
-
-    err := h.userService.CheckIn(userID, plantID, input.Image, input.Note)
-    if err != nil {
-        helpers.SetFlashMessage(c, "error", err.Error())
-        c.Redirect(http.StatusFound, "/plant/" + plantID)
-        return
-    }
-
-    helpers.SetFlashMessage(c, "success", "Check-in successful")
-    c.Redirect(http.StatusFound, "/plant/" + plantID)
 }

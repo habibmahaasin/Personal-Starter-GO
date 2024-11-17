@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Batumbuah - {{ .title }}</title>
+    <title>Go_Starter - {{ .title }}</title>
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css"
       rel="stylesheet"
@@ -23,56 +23,11 @@
       };
     </script>
   </head>
-  <style>
-    html {
-      overflow-y: scroll;
-      scrollbar-width: none;
-    }
-
-    html::-webkit-scrollbar {
-      display: none;
-    }
-  </style>
   <body class="bg-gray-100">
     <div
       class="container mx-auto max-w-md bg-white min-h-[100vh] overflow-x-none"
     >
-      {{ if .title }} {{ template "content" . }} {{ if ne .title "Login" }} {{
-      template "navigation" . }} {{ end }} {{ end }}
+      {{ template "content" . }}
     </div>
   </body>
-
-  <script>
-    setTimeout(() => {
-      const toastMessages = document.getElementsByClassName("toastMessage");
-      Array.from(toastMessages).forEach((toast) => {
-        toast.classList.add("opacity-0");
-      });
-    }, 1000);
-
-    setTimeout(() => {
-      const toastMessages = document.getElementsByClassName("toastMessage");
-      Array.from(toastMessages).forEach((toast) => {
-        toast.classList.add("invisible");
-      });
-    }, 1500);
-
-    setTimeout(() => {
-      const toastMessages = document.getElementsByClassName("toastMessage");
-      Array.from(toastMessages).forEach((toast) => {
-        toast.classList.add("hidden");
-      });
-    }, 2000);
-
-    function showForm(event) {
-      event.preventDefault();
-      const link = document.getElementById("proceed-link");
-      link.style.display = "none";
-
-      const formContainer = document.getElementById("form-container");
-      formContainer.classList.remove("hidden");
-
-      window.open("https://forms.gle/1jiPg6QsTpWdDsbd8", "_blank");
-    }
-  </script>
 </html>

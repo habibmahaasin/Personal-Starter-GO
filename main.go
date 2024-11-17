@@ -1,11 +1,11 @@
 package main
 
 import (
-	"Batumbuah/app/config"
-	database "Batumbuah/app/databases"
-	routesV1 "Batumbuah/modules/v1/routes"
-	"Batumbuah/pkg/html"
-	error "Batumbuah/pkg/http-error"
+	"Go_Starter/app/config"
+	database "Go_Starter/app/databases"
+	routesV1 "Go_Starter/modules/v1/routes"
+	"Go_Starter/pkg/html"
+	error "Go_Starter/pkg/http-error"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -27,7 +27,7 @@ func setup() (*gorm.DB, config.Conf, *gin.Engine) {
 	router.Use(cors.Default())
 
 	cookieStore := cookie.NewStore([]byte(conf.App.Secret_key))
-	router.Use(sessions.Sessions("Batumbuah", cookieStore))
+	router.Use(sessions.Sessions("Go_Starter", cookieStore))
 	router.HTMLRender = html.Render("./public/templates")
 
 	//Error Handling for 404 Not Found Page and Method Not Allowed

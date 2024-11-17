@@ -1,8 +1,8 @@
 package database
 
 import (
-	"Batumbuah/app/config"
-	"Batumbuah/modules/v1/utilities/user/models"
+	"Go_Starter/app/config"
+	"Go_Starter/modules/v1/utilities/user/models"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -18,11 +18,7 @@ func Init(conf config.Conf) *gorm.DB {
 		log.Fatalln(err.Error())
 	}
 
-	// digunakan untuk auto migrate dari entity ke database
+	// digunakan untuk auto migrate dari entity ke databases
 	Db.AutoMigrate(&models.User{})
-	Db.AutoMigrate(&models.UserPlant{})
-	Db.AutoMigrate(&models.PlantStats{})
-	Db.AutoMigrate(&models.TestInformation{})
-	Db.AutoMigrate(&models.CheckInLog{})
 	return Db
 }

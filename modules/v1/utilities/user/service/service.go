@@ -1,7 +1,7 @@
 package service
 
 import (
-	"Batumbuah/modules/v1/utilities/user/models"
+	"Go_Starter/modules/v1/utilities/user/models"
 	"errors"
 	"fmt"
 	"time"
@@ -57,100 +57,3 @@ func (s *service) Register(fullName, email, password, address string, roleID int
 
 	return s.repository.CreateUser(user)
 }
-
-func (s *service) RegisterPlant(userID, name, email string) error {
-    userPlant := &models.UserPlant{
-        UserID:  userID,
-        PlantID: uuid.New().String(),
-        Name:    name,
-        DateCreated: time.Now(),
-        DateUpdated: time.Now(),
-    }
-
-    plantStats := &models.PlantStats{
-        PlantID:            userPlant.PlantID,
-        TotalCheckIn:       0,
-        IsPreTested:        false,
-        IsPostTested:       false,
-        IsAvailableToRedeem: false,
-        IsRedeemedReward:   false,
-        DateCreated:        time.Now(),
-        DateUpdated:        time.Now(),
-    }
-
-    testInfo := &models.TestInformation{
-        PlantID:    userPlant.PlantID,
-        Email:      email,
-        DateCreated: time.Now(),
-        DateUpdated: time.Now(),
-    }
-
-    return s.repository.RegisterPlant(userPlant, plantStats, testInfo)
-}
-
-func (s *service) GetPlantByUserID(userID string) ([]models.UserPlant, error) {
-	return s.repository.GetPlantByUserID(userID)
-}
-
-func (s *service) GetPlantByID(plantID string) (models.UserPlant, error) {
-	return s.repository.GetPlantByID(plantID)
-}
-
-func (s *service) PlantCheckIn(UserPlantID, image, note string) error {
-	return s.repository.PlantCheckIn(UserPlantID, image, note)
-}
-
-func (s *service) CheckIn(userID, plantID, image, note string) error {
-    if plantID == "" {
-        return errors.New("plant ID cannot be empty")
-    }
-
-    lastCheckIn, err := s.repository.GetLastCheckInTime(plantID)
-    if err != nil {
-        if err.Error() == "no check-in found for the plant" {
-            return s.repository.PlantCheckIn(plantID, image, note)
-        }
-        return err 
-    }
-	
-    if time.Since(lastCheckIn.DateCreated) < 7*24*time.Hour {
-        return errors.New("check-in allowed only once every 7 days")
-    }
-
-    return s.repository.PlantCheckIn(plantID, image, note)
-}
-
-
-func (s *service) GetCheckInLogs(UserPlantID string) ([]models.CheckInLog, error) {
-	return s.repository.GetCheckInLogs(UserPlantID)
-}
-
-func (s *service) GetPlantStatsById(plantID string) (models.PlantStats, error) {
-	return s.repository.GetPlantStatsById(plantID)
-}
-
-// func (s *service) GetUserStats(userID string) (models.UserStats, error) {
-// 	return s.repository.GetUserStats(userID)
-// }
-
-// func (s *service) UpdatePreTestStatus(userID string, email string, status bool) error {
-// 	err := s.repository.UpdateTestInformation(models.TestInformation{
-// 		UserID: userID,
-// 		Email:  email,
-// 	})
-	
-// 	if err != nil {
-// 		return fmt.Errorf("failed to create test information: %w", err)
-// 	}
-
-// 	err = s.repository.UpdateUserStats(userID, models.UserStats{
-// 		UserID:      userID,
-// 		IsPreTested: status,
-// 		DateUpdated: time.Now(),
-// 	})
-// 	if err != nil {
-// 		return fmt.Errorf("failed to update user stats: %w", err)
-// 	}
-
-// 	return nil
-// }

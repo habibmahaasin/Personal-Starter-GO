@@ -1,7 +1,7 @@
 package basic
 
 import (
-	"Batumbuah/app/config"
+	"Go_Starter/app/config"
 
 	"github.com/gin-gonic/gin"
 )

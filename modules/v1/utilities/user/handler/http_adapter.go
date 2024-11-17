@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"Batumbuah/modules/v1/utilities/user/repository"
-	"Batumbuah/modules/v1/utilities/user/service"
-	jwt "Batumbuah/pkg/jwt"
+	"Go_Starter/modules/v1/utilities/user/repository"
+	"Go_Starter/modules/v1/utilities/user/service"
+	jwt "Go_Starter/pkg/jwt"
 
 	"gorm.io/gorm"
 )
